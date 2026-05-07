@@ -44,7 +44,7 @@
     "storybook": "make storybook",
     "storybook:build": "make storybook-build",
     "test:storybook": "make test-storybook",
-    "postinstall": "sh scripts/postinstall.sh"
+    "postinstall": "node scripts/postinstall.js"
   },
   "dependencies": {
     "@1password/sdk": "^0.4.0",
@@ -250,6 +250,7 @@
     "dist/**/*.json",
     "dist/**/*.png",
     "dist/assets/**/*",
+    "scripts/postinstall.js",
     "scripts/postinstall.sh",
     "npm-shrinkwrap.json",
     "README.md",
