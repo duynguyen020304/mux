@@ -135,6 +135,9 @@ type DiffState =
   | { status: "loaded"; hunks: DiffHunk[]; truncationWarning: string | null }
   | { status: "error"; message: string };
 
+const LARGE_REVIEW_COLLAPSE_HUNK_THRESHOLD = 200;
+const LARGE_REVIEW_COLLAPSE_OUTPUT_BYTES = 250_000;
+
 const REVIEW_PANEL_CACHE_MAX_ENTRIES = 20;
 const REVIEW_PANEL_CACHE_MAX_SIZE_BYTES = 20 * 1024 * 1024; // 20MB
 
@@ -1242,20 +1245,46 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({
     firstSeenMap,
   ]);
 
+  // Huge reviews are useful for navigation, but eagerly expanding every hunk can mount
+  // tens of thousands of diff-line nodes next to the transcript. Keep the list scannable
+  // by expanding only the selected hunk once review scale crosses this threshold.
+  const preferCollapsedHunks =
+    hunks.length >= LARGE_REVIEW_COLLAPSE_HUNK_THRESHOLD ||
+    (diagnosticInfo?.outputLength ?? 0) >= LARGE_REVIEW_COLLAPSE_OUTPUT_BYTES ||
+    (diffState.status === "loaded" || diffState.status === "refreshing"
+      ? diffState.truncationWarning !== null
+      : false);
+
   // Keep ref in sync so callbacks can access current filtered list without dependency
   filteredHunksRef.current = filteredHunks;
 
   // Ensure selectedHunkId is valid after filtering/sorting:
   // - If no selection or selection not in filtered list, select first visible hunk
   // - This runs after sorting, so we always select the top-most hunk in current order
+  //
+  // Immersive review can intentionally navigate to a hunk that is hidden by
+  // the active filter (e.g. clicking a pending review whose hunk has been
+  // marked read while hide-read is on). The immersive view falls back to
+  // `allHunks` for those selections, so when we're in immersive mode we only
+  // reset when the hunk has truly disappeared from the diff (e.g. after a
+  // refresh removed it). The non-immersive panel only ever renders
+  // `filteredHunks`, so it keeps the original auto-advance to a visible hunk.
   useEffect(() => {
     if (filteredHunks.length === 0) return;
+
+    if (isImmersive) {
+      const selectionExists = selectedHunkId && hunks.some((h) => h.id === selectedHunkId);
+      if (!selectionExists) {
+        setSelectedHunkId(filteredHunks[0].id);
+      }
+      return;
+    }
 
     const selectionValid = selectedHunkId && filteredHunks.some((h) => h.id === selectedHunkId);
     if (!selectionValid) {
       setSelectedHunkId(filteredHunks[0].id);
     }
-  }, [filteredHunks, selectedHunkId, setSelectedHunkId]);
+  }, [filteredHunks, hunks, isImmersive, selectedHunkId, setSelectedHunkId]);
 
   // Memoize search config to prevent re-creating object on every render
   // This allows React.memo on HunkViewer to work properly
@@ -1729,6 +1758,7 @@ export const ReviewPanel: React.FC<ReviewPanelProps> = ({
                       onComposingChange={handleHunkComposingChange}
                       diffBase={filters.diffBase}
                       includeUncommitted={filters.includeUncommitted}
+                      preferCollapsed={preferCollapsedHunks}
                       reviewActions={reviewActions}
                     />
                   );
