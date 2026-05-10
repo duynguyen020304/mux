@@ -44,7 +44,7 @@ function isBashOutputTool(
     typeof args === "object" &&
     args !== null &&
     "process_id" in args &&
-    typeof (args as { process_id: unknown }).process_id === "string"
+    typeof args.process_id === "string"
   );
 }
 

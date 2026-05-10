@@ -111,9 +111,7 @@ describe("HeartbeatService", () => {
 
   function makeProjectsConfig(workspaces: Workspace[]): ProjectsConfig {
     return {
-      projects: new Map<string, ProjectConfig>([
-        [testProjectPath, { workspaces } as unknown as ProjectConfig],
-      ]),
+      projects: new Map<string, ProjectConfig>([[testProjectPath, { workspaces }]]),
     };
   }
 
@@ -938,16 +936,7 @@ describe("HeartbeatService", () => {
       await realWorkspaceService.executeHeartbeat(testWorkspaceId);
 
       expect(appendHeartbeatContextResetBoundary).toHaveBeenCalledTimes(1);
-      const appendCall = appendHeartbeatContextResetBoundary.mock.calls.at(0)?.[0] as
-        | {
-            boundaryText: string;
-            pendingFollowUp: {
-              text?: string;
-              dispatchOptions?: { requireIdle?: boolean };
-              muxMetadata?: { type?: string };
-            };
-          }
-        | undefined;
+      const appendCall = appendHeartbeatContextResetBoundary.mock.calls.at(0)?.[0];
       expect(appendCall?.boundaryText).toContain("Heartbeat context reset");
       expect(appendCall?.pendingFollowUp.text).toContain("[Heartbeat]");
       expect(appendCall?.pendingFollowUp.dispatchOptions?.requireIdle).toBe(true);

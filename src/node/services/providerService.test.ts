@@ -751,7 +751,7 @@ describe("ProviderService custom provider mutations", () => {
           { id: " mixtral ", contextWindowTokens: 32_768, mappedToModel: " openai/gpt-4o " },
           { id: " mixtral ", contextWindowTokens: 16_384 },
           { id: " " },
-        ] as unknown as ProviderModelEntry[],
+        ],
       });
 
       expect(result.success).toBe(true);

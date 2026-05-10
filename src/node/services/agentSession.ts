@@ -1045,7 +1045,7 @@ export class AgentSession {
   }
 
   private isPendingAskUserQuestion(message: MuxMessage | null | undefined): boolean {
-    if (!message || message.role !== "assistant") {
+    if (message?.role !== "assistant") {
       return false;
     }
 
@@ -1420,7 +1420,7 @@ export class AgentSession {
             typeof payload === "object" &&
             payload !== null &&
             "workspaceId" in payload &&
-            (payload as { workspaceId: unknown }).workspaceId !== this.workspaceId
+            payload.workspaceId !== this.workspaceId
           ) {
             return;
           }
@@ -1762,7 +1762,7 @@ export class AgentSession {
           }
         }
 
-        if (streamCursor && streamInfo && streamCursor.messageId === streamInfo.messageId) {
+        if (streamCursor && streamCursor.messageId === streamInfo?.messageId) {
           // Stream cursor is advisory: only apply it when the same stream is still active.
           // If the stream ended or rotated while offline, keep since-mode history replay
           // and skip stream filtering by leaving afterTimestamp undefined.
@@ -3870,7 +3870,7 @@ export class AgentSession {
           typeof payload === "object" &&
           payload !== null &&
           "workspaceId" in payload &&
-          (payload as { workspaceId: unknown }).workspaceId !== this.workspaceId
+          payload.workspaceId !== this.workspaceId
         ) {
           return;
         }
@@ -4184,7 +4184,7 @@ export class AgentSession {
         typeof raw !== "object" ||
         raw === null ||
         !("workspaceId" in raw) ||
-        (raw as { workspaceId: unknown }).workspaceId !== this.workspaceId
+        raw.workspaceId !== this.workspaceId
       ) {
         return;
       }
@@ -4209,7 +4209,7 @@ export class AgentSession {
           typeof payload === "object" &&
           payload !== null &&
           "workspaceId" in payload &&
-          (payload as { workspaceId: unknown }).workspaceId !== this.workspaceId
+          payload.workspaceId !== this.workspaceId
         ) {
           return;
         }

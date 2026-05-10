@@ -3,7 +3,7 @@ import { IdleCompactionService } from "./idleCompactionService";
 import type { Config } from "@/node/config";
 import type { HistoryService } from "./historyService";
 import type { ExtensionMetadataService } from "./ExtensionMetadataService";
-import type { ProjectConfig, ProjectsConfig } from "@/common/types/project";
+import type { ProjectConfig } from "@/common/types/project";
 import { createMuxMessage } from "@/common/types/message";
 import { Ok } from "@/common/types/result";
 import { createTestHistoryService } from "./testHistoryService";
@@ -199,7 +199,7 @@ describe("IdleCompactionService", () => {
             },
           ],
         ]),
-      } as ProjectsConfig);
+      });
 
       await service.checkAllWorkspaces();
 
@@ -234,7 +234,7 @@ describe("IdleCompactionService", () => {
             },
           ],
         ]),
-      } as ProjectsConfig);
+      });
 
       // Make first workspace fail eligibility check (history throws)
       let callCount = 0;
@@ -277,7 +277,7 @@ describe("IdleCompactionService", () => {
             },
           ],
         ]),
-      } as ProjectsConfig);
+      });
 
       spyOn(historyService, "getLastMessages").mockResolvedValue(
         Ok([

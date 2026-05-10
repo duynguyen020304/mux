@@ -16,11 +16,9 @@ import type { Result } from "@/common/types/result";
 import { Ok, Err } from "@/common/types/result";
 import { log, type Logger } from "./log";
 import type {
-  StreamStartEvent,
   StreamEndEvent,
   StreamAbortReason,
   UsageDeltaEvent,
-  ToolCallEndEvent,
   CompletedMessagePart,
 } from "@/common/types/stream";
 
@@ -568,7 +566,7 @@ export class StreamManager extends EventEmitter {
           parts: streamInfo.parts, // Parts array includes reasoning, text, and tools
         };
 
-        await this.historyService.writePartial(workspaceId as string, partialMessage);
+        await this.historyService.writePartial(workspaceId, partialMessage);
         streamInfo.lastPartialWriteTime = Date.now();
       } catch (error) {
         log.error("Failed to write partial message:", error);
@@ -1133,7 +1131,7 @@ export class StreamManager extends EventEmitter {
     const workspaceLog = this.getWorkspaceLogger(workspaceId, streamInfo);
     try {
       await this.sessionUsageService.recordUsage(
-        workspaceId as string,
+        workspaceId,
         normalizeToCanonical(model),
         messageUsage
       );
@@ -1511,13 +1509,13 @@ export class StreamManager extends EventEmitter {
     streamInfo.toolCompletionTimestamps.set(toolCallId, completionTimestamp);
     this.emit("tool-call-end", {
       type: "tool-call-end",
-      workspaceId: workspaceId as string,
+      workspaceId: workspaceId,
       messageId: streamInfo.messageId,
       toolCallId,
       toolName,
       result: output,
       timestamp: completionTimestamp,
-    } as ToolCallEndEvent);
+    });
   }
 
   private async finishToolCall(
@@ -1680,7 +1678,7 @@ export class StreamManager extends EventEmitter {
 
     this.emit("stream-start", {
       type: "stream-start",
-      workspaceId: workspaceId as string,
+      workspaceId: workspaceId,
       messageId: streamInfo.messageId,
       ...(options?.replay && { replay: true }),
       model: canonicalModel,
@@ -1694,7 +1692,7 @@ export class StreamManager extends EventEmitter {
       ...(streamInfo.initialMetadata?.acpPromptId != null
         ? { acpPromptId: streamInfo.initialMetadata.acpPromptId }
         : {}),
-    } as StreamStartEvent);
+    });
   }
 
   private emitStreamAbort(
@@ -1790,7 +1788,7 @@ export class StreamManager extends EventEmitter {
     streamInfo: WorkspaceStreamInfo,
     historySequence: number
   ): Promise<void> {
-    this.mcpServerManager?.acquireLease(workspaceId as string);
+    this.mcpServerManager?.acquireLease(workspaceId);
 
     try {
       // Update state to streaming
@@ -2128,7 +2126,7 @@ export class StreamManager extends EventEmitter {
                 streamInfo.lastStepProviderMetadata = finishStepPart.providerMetadata;
 
                 const usageEvent = buildUsageDeltaEvent({
-                  workspaceId: workspaceId as string,
+                  workspaceId: workspaceId,
                   messageId: streamInfo.messageId,
                   // Step-level (for context window display)
                   usage: finishStepPart.usage,
@@ -2213,7 +2211,7 @@ export class StreamManager extends EventEmitter {
             // Emit stream end event with parts preserved in temporal order
             const streamEndEvent: StreamEndEvent = {
               type: "stream-end",
-              workspaceId: workspaceId as string,
+              workspaceId: workspaceId,
               messageId: streamInfo.messageId,
               ...(streamInfo.initialMetadata?.acpPromptId != null
                 ? { acpPromptId: streamInfo.initialMetadata.acpPromptId }
@@ -2255,7 +2253,7 @@ export class StreamManager extends EventEmitter {
 
               // CRITICAL: Delete partial.json before updating chat.jsonl
               // On successful completion, partial.json becomes stale and must be removed
-              const deleteResult = await this.historyService.deletePartial(workspaceId as string);
+              const deleteResult = await this.historyService.deletePartial(workspaceId);
               if (!deleteResult.success) {
                 workspaceLog.warn("Failed to delete partial on stream end", {
                   error: deleteResult.error,
@@ -2264,7 +2262,7 @@ export class StreamManager extends EventEmitter {
 
               // Update the placeholder message in chat.jsonl with final content
               const updateResult = await this.historyService.updateHistory(
-                workspaceId as string,
+                workspaceId,
                 finalAssistantMessage
               );
               if (!updateResult.success) {
@@ -2326,7 +2324,7 @@ export class StreamManager extends EventEmitter {
     } catch (error) {
       await this.handleStreamFailure(workspaceId, streamInfo, error);
     } finally {
-      this.mcpServerManager?.releaseLease(workspaceId as string);
+      this.mcpServerManager?.releaseLease(workspaceId);
 
       // Guaranteed cleanup in all code paths
       // Clear any pending timers to prevent keeping process alive
@@ -2507,7 +2505,7 @@ export class StreamManager extends EventEmitter {
     await this.awaitPendingPartialWrite(streamInfo);
 
     // Write error state to disk - await to ensure consistent state before any resume.
-    await this.historyService.writePartial(workspaceId as string, errorPartialMessage);
+    await this.historyService.writePartial(workspaceId, errorPartialMessage);
 
     // Emit error event.
     this.emit("error", createErrorEvent(workspaceId as string, payload));
@@ -2582,7 +2580,7 @@ export class StreamManager extends EventEmitter {
 
     if (!preserveParts) {
       try {
-        await this.historyService.deletePartial(workspaceId as string);
+        await this.historyService.deletePartial(workspaceId);
       } catch (deleteError) {
         const logger = options?.workspaceLog ?? this.getWorkspaceLogger(workspaceId, streamInfo);
         logger.warn("Failed to clear partial state before retry", { error: deleteError });

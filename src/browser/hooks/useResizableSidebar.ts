@@ -168,7 +168,7 @@ export function useResizableSidebar({
     };
 
     const eventName = getStorageChangeEvent(storageKey);
-    window.addEventListener(eventName, handleExternalUpdate as EventListener);
+    window.addEventListener(eventName, handleExternalUpdate);
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === storageKey) {
@@ -178,7 +178,7 @@ export function useResizableSidebar({
     window.addEventListener("storage", handleStorage);
 
     return () => {
-      window.removeEventListener(eventName, handleExternalUpdate as EventListener);
+      window.removeEventListener(eventName, handleExternalUpdate);
       window.removeEventListener("storage", handleStorage);
     };
   }, [storageKey, minWidth, maxWidth, isResizing, resolveMaxWidthPx]);

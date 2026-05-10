@@ -157,9 +157,7 @@ function getInputJsonSchema(tool: Tool): Record<string, unknown> {
     // Zod `.default(...)` makes inputs optional, but z.toJSONSchema() keeps
     // those fields in the "required" array. Strip them so the generated TS
     // types match runtime behavior.
-    return removeDefaultsFromRequired(
-      z.toJSONSchema(schema as z.ZodType) as Record<string, unknown>
-    );
+    return removeDefaultsFromRequired(z.toJSONSchema(schema as z.ZodType));
   }
 
   // Already JSON Schema — leave required array untouched; `default` is advisory
@@ -238,14 +236,10 @@ export async function generateMuxTypes(tools: Record<string, Tool>): Promise<str
     const argsTypeName = `${pascalCase(name)}Args`;
 
     try {
-      const argInterface = await compile(
-        inputSchema as Parameters<typeof compile>[0],
-        argsTypeName,
-        {
-          bannerComment: "",
-          ignoreMinAndMaxItems: true, // Clean Type[] instead of verbose tuple unions
-        }
-      );
+      const argInterface = await compile(inputSchema, argsTypeName, {
+        bannerComment: "",
+        ignoreMinAndMaxItems: true, // Clean Type[] instead of verbose tuple unions
+      });
       // Strip "export " prefix and add to output
       const stripped = argInterface.replace(/^export /gm, "");
       lines.push(indent(stripped.trim(), 2));

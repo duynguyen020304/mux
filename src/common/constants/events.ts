@@ -202,7 +202,7 @@ export function createCustomEvent<K extends keyof CustomEventPayloads>(
   ...args: CustomEventPayloads[K] extends never ? [] : [detail: CustomEventPayloads[K]]
 ): CustomEvent<CustomEventPayloads[K]> {
   const [detail] = args;
-  return new CustomEvent(eventName, { detail } as CustomEventInit<CustomEventPayloads[K]>);
+  return new CustomEvent(eventName, { detail });
 }
 
 /**

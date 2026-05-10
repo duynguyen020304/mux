@@ -12,7 +12,7 @@ function createMockTool(schema: z.ZodType): Tool {
     description: "Mock tool",
     inputSchema: schema,
     execute: () => Promise.resolve({ success: true }),
-  } as unknown as Tool;
+  };
 }
 
 describe("validateTypes", () => {

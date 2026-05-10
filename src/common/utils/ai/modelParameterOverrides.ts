@@ -82,7 +82,7 @@ export function resolveModelParameterOverrides(
   }
 
   return {
-    standard: standard as ResolvedCallSettingsOverrides,
+    standard: standard,
     ...(Object.keys(providerExtras).length > 0 ? { providerExtras } : {}),
   };
 }

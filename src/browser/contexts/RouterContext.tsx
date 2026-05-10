@@ -454,7 +454,7 @@ function RouterContextInner(props: { children: ReactNode }) {
 // setIsSending(false)) and the deferred route change.
 export function RouterProvider(props: { children: ReactNode }) {
   return (
-    <MemoryRouter initialEntries={[getInitialRoute()]} unstable_useTransitions={false}>
+    <MemoryRouter initialEntries={[getInitialRoute()]}>
       <RouterContextInner>{props.children}</RouterContextInner>
     </MemoryRouter>
   );

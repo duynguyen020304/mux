@@ -968,12 +968,8 @@ function AppInner() {
       setSelectedWorkspace(toWorkspaceSelection(workspaceInfo));
     };
 
-    window.addEventListener(CUSTOM_EVENTS.WORKSPACE_FORK_SWITCH, handleForkSwitch as EventListener);
-    return () =>
-      window.removeEventListener(
-        CUSTOM_EVENTS.WORKSPACE_FORK_SWITCH,
-        handleForkSwitch as EventListener
-      );
+    window.addEventListener(CUSTOM_EVENTS.WORKSPACE_FORK_SWITCH, handleForkSwitch);
+    return () => window.removeEventListener(CUSTOM_EVENTS.WORKSPACE_FORK_SWITCH, handleForkSwitch);
   }, [userProjects, refreshProjects, setSelectedWorkspace, setWorkspaceMetadata]);
 
   // Set up navigation callback for notification clicks

@@ -9,7 +9,7 @@ function mockFetch(handler: (url: string, init: RequestInit) => Promise<Response
       preconnect: () => {
         // no-op
       },
-    }) as typeof globalThis.fetch,
+    }),
     configurable: true,
     writable: true,
   });
@@ -518,7 +518,7 @@ describe("CopilotResponsesLanguageModel", () => {
         structuredSystemPrompt as never,
         { role: "user", content: [{ type: "text", text: "Hi" }] },
       ],
-    } as LanguageModelV2CallOptions);
+    });
 
     expect(capturedBody?.instructions).toBeUndefined();
     expect(capturedBody?.input).toEqual([

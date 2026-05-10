@@ -36,7 +36,7 @@ describe("WORKSPACE_DEFAULTS", () => {
     const originalAgentId = WORKSPACE_DEFAULTS.agentId;
     const mutableDefaults = WORKSPACE_DEFAULTS as Mutable<typeof WORKSPACE_DEFAULTS>;
     try {
-      mutableDefaults.agentId = "plan" as unknown as typeof WORKSPACE_DEFAULTS.agentId;
+      mutableDefaults.agentId = "plan";
     } catch {
       // Expected in strict mode
     }

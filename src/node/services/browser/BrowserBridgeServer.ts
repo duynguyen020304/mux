@@ -104,6 +104,7 @@ async function connectToStream(port: number): Promise<WebSocket> {
     let settled = false;
     const upstream = new WebSocket(`ws://${STREAM_HOST}:${port}`);
 
+    const swallowLateError = () => undefined;
     const cleanup = () => {
       upstream.off("open", onOpen);
       upstream.off("error", onError);
@@ -142,6 +143,7 @@ async function connectToStream(port: number): Promise<WebSocket> {
       );
     };
 
+    upstream.on("error", swallowLateError);
     upstream.once("open", onOpen);
     upstream.once("error", onError);
     upstream.once("close", onCloseBeforeOpen);
@@ -275,8 +277,7 @@ export class BrowserBridgeServer {
       { allowOtherWorkspaceSession: payload.allowOtherWorkspaceSession }
     );
     if (
-      !liveSession ||
-      liveSession.sessionName !== payload.sessionName ||
+      liveSession?.sessionName !== payload.sessionName ||
       liveSession.streamPort !== payload.streamPort
     ) {
       log.warn("BrowserBridgeServer: rejecting upgrade with missing or mismatched session", {
@@ -290,11 +291,31 @@ export class BrowserBridgeServer {
       return;
     }
 
+    const queuedClientMessages: Array<{ data: RawData; isBinary: boolean }> = [];
+    const queueClientMessage = (data: RawData, isBinary: boolean) => {
+      queuedClientMessages.push({ data, isBinary });
+    };
+    // The browser WebSocket can report OPEN before the upstream stream is connected.
+    // Buffer early client frames so startup timing changes in ws do not drop input.
+    ws.on("message", queueClientMessage);
+
     try {
       const upstream = await connectToStream(liveSession.streamPort);
       const pair: BridgePair = { client: ws, upstream, closed: false };
       this.attachBridgeListeners(pair, payload.workspaceId, liveSession.sessionName);
       this.activePairs.add(pair);
+      ws.off("message", queueClientMessage);
+      for (const message of queuedClientMessages) {
+        if (pair.closed) {
+          break;
+        }
+        pair.upstream.send(
+          message.isBinary
+            ? normalizeBinaryMessage(message.data)
+            : normalizeTextMessage(message.data),
+          { binary: message.isBinary }
+        );
+      }
       if (this.browserSessionStateHub) {
         const unsubscribe = this.browserSessionStateHub.subscribe(
           payload.workspaceId,
@@ -317,6 +338,7 @@ export class BrowserBridgeServer {
         this.cleanupPair(pair, { closeReason: "websocket closed before bridge finished" });
       }
     } catch (error) {
+      ws.off("message", queueClientMessage);
       log.warn("BrowserBridgeServer: failed to connect to stream endpoint", {
         workspaceId: payload.workspaceId,
         sessionName: payload.sessionName,

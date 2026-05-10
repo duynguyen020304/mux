@@ -199,7 +199,7 @@ function isTypedWorkspaceEvent(value: unknown, type: string): boolean {
     typeof value === "object" &&
     value !== null &&
     "type" in value &&
-    (value as { type: unknown }).type === type &&
+    value.type === type &&
     "workspaceId" in value &&
     typeof (value as { workspaceId: unknown }).workspaceId === "string"
   );

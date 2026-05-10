@@ -65,7 +65,7 @@ function getResultCount(result: unknown): number {
     unwrapped !== null &&
     typeof unwrapped === "object" &&
     "sources" in unwrapped &&
-    Array.isArray((unwrapped as { sources: unknown }).sources)
+    Array.isArray(unwrapped.sources)
   ) {
     return (unwrapped as { sources: unknown[] }).sources.length;
   }

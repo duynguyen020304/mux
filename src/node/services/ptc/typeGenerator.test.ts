@@ -11,7 +11,7 @@ function createMockTool(schema: z.ZodType, hasExecute = true): Tool {
     description: "Mock tool",
     inputSchema: schema,
     execute: hasExecute ? () => Promise.resolve({ success: true }) : undefined,
-  } as unknown as Tool;
+  };
 }
 
 describe("generateMuxTypes", () => {
@@ -298,13 +298,13 @@ describe("getCachedMuxTypes", () => {
       description: "Version 1",
       inputSchema: z.object({ x: z.string() }),
       execute: () => Promise.resolve({ success: true }),
-    } as unknown as Tool;
+    };
 
     const tool2: Tool = {
       description: "Version 2",
       inputSchema: z.object({ x: z.string() }),
       execute: () => Promise.resolve({ success: true }),
-    } as unknown as Tool;
+    };
 
     const types1 = await getCachedMuxTypes({ my_tool: tool1 });
     expect(types1).toContain("Version 1");

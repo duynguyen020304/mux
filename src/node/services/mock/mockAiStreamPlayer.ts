@@ -282,7 +282,7 @@ export class MockAiStreamPlayer {
     }
 
     const latest = messages[messages.length - 1];
-    if (!latest || latest.role !== "user") {
+    if (latest?.role !== "user") {
       return Err({ type: "unknown", raw: "Mock AI expected a user message" });
     }
 

@@ -107,7 +107,7 @@ async function createWebSocketClient(wsUrl: string): Promise<WebSocketClientHand
     ws.on("error", reject);
   });
 
-  const link = new WebSocketRPCLink({ websocket: ws as unknown as globalThis.WebSocket });
+  const link = new WebSocketRPCLink({ websocket: ws });
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- needed for tsgo typecheck
   const client = createORPCClient(link) as RouterClient<AppRouter>;
 

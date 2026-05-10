@@ -90,7 +90,7 @@ function readCompactionRequest(
   message: MuxMessage
 ): { followUpContent?: CompactionFollowUpRequest } | undefined {
   const muxMeta = message.metadata?.muxMetadata;
-  if (!muxMeta || muxMeta.type !== "compaction-request") {
+  if (muxMeta?.type !== "compaction-request") {
     return undefined;
   }
   return { followUpContent: getCompactionFollowUpContent(muxMeta) };

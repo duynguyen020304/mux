@@ -60,14 +60,14 @@ describe("useAutoScroll", () => {
     // Install the deterministic scheduler on the per-test `window` rather than
     // `globalThis` so this mock never leaks into downstream test files. The
     // hook resolves rAF/cAF from `window` for exactly this reason.
-    window.requestAnimationFrame = ((callback: FrameRequestCallback) => {
+    window.requestAnimationFrame = (callback: FrameRequestCallback) => {
       const id = nextFrameId++;
       scheduledFrames.push({ id, callback });
       return id;
-    }) as typeof window.requestAnimationFrame;
-    window.cancelAnimationFrame = ((id: number) => {
+    };
+    window.cancelAnimationFrame = (id: number) => {
       scheduledFrames = scheduledFrames.filter((frame) => frame.id !== id);
-    }) as typeof window.cancelAnimationFrame;
+    };
   });
 
   afterEach(() => {

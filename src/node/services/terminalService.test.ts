@@ -138,7 +138,7 @@ describe("TerminalService", () => {
       throw new Error("Expected createSession to be called");
     }
 
-    const options = call[6] as { env?: NodeJS.ProcessEnv } | undefined;
+    const options = call[6];
     if (!options?.env) {
       throw new Error("Expected createSession to receive terminal env");
     }
@@ -344,7 +344,7 @@ describe("TerminalService", () => {
         throw new Error("Expected createSession to be called");
       }
 
-      const options = call[6] as { env?: NodeJS.ProcessEnv } | undefined;
+      const options = call[6];
       expect(options?.env).toBeUndefined();
       expect(getEffectiveSecretsMock).not.toHaveBeenCalled();
     } finally {
@@ -1072,8 +1072,7 @@ describe("TerminalService.openNative", () => {
     })) as unknown as typeof childProcess.spawnSync);
 
     // Spy on fs.stat to reject (no ghostty installed by default)
-    fsStatSpy = spyOn(fs, "stat").mockImplementation((() =>
-      Promise.reject(new Error("ENOENT"))) as unknown as typeof fs.stat);
+    fsStatSpy = spyOn(fs, "stat").mockImplementation(() => Promise.reject(new Error("ENOENT")));
   });
 
   afterEach(() => {

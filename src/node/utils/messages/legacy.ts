@@ -13,7 +13,7 @@ interface LegacyMuxMetadata extends MuxMetadata {
  * - `{ compacted: true, idleCompacted: true }` → `{ compacted: "idle" }`
  */
 export function normalizeLegacyMuxMetadata(message: MuxMessage): MuxMessage {
-  const metadata = message.metadata as LegacyMuxMetadata | undefined;
+  const metadata = message.metadata;
   if (!metadata) return message;
 
   let normalized: MuxMetadata = { ...metadata };
@@ -30,7 +30,7 @@ export function normalizeLegacyMuxMetadata(message: MuxMessage): MuxMessage {
   }
 
   // Migrate idleCompacted: true → compacted: "idle"
-  if (metadata.idleCompacted === true) {
+  if ((metadata as LegacyMuxMetadata).idleCompacted === true) {
     const { idleCompacted, ...rest } = normalized as LegacyMuxMetadata;
     normalized = { ...rest, compacted: "idle" };
     changed = true;

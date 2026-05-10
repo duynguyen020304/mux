@@ -16,7 +16,7 @@ import type { PolicyService } from "@/node/services/policyService";
 import type { MCPConfigService } from "@/node/services/mcpConfigService";
 import { parseBearerWwwAuthenticate, type McpOauthService } from "@/node/services/mcpOauthService";
 import { createRuntime } from "@/node/runtime/runtimeFactory";
-import { transformMCPResult, type MCPCallToolResult } from "@/node/services/mcpResultTransform";
+import { transformMCPResult } from "@/node/services/mcpResultTransform";
 import { buildMcpToolName } from "@/common/utils/tools/mcpToolName";
 import { getErrorMessage } from "@/common/utils/errors";
 
@@ -160,7 +160,7 @@ export function wrapMCPTools(
             () => Promise.resolve(originalExecute(args, context)) as Promise<unknown>,
             { toolName, timeoutMs: MCP_TOOL_CALL_TIMEOUT_MS, signal: abortSignal }
           );
-          return transformMCPResult(result as MCPCallToolResult);
+          return transformMCPResult(result);
         } catch (error) {
           if (shouldRecycleClientAfterToolError(error)) {
             try {
@@ -268,10 +268,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 
 function hasHeaderGetter(value: unknown): value is { get: (name: string) => unknown } {
   return (
-    value !== null &&
-    typeof value === "object" &&
-    "get" in value &&
-    typeof (value as { get: unknown }).get === "function"
+    value !== null && typeof value === "object" && "get" in value && typeof value.get === "function"
   );
 }
 
@@ -1764,7 +1761,7 @@ export class MCPServerManager {
           return null;
         }
 
-        const tools = wrapMCPTools(rawTools as unknown as Record<string, Tool>, {
+        const tools = wrapMCPTools(rawTools, {
           onActivity,
           onClosed: () => {
             if (instanceRef.current) instanceRef.current.isClosed = true;
@@ -1954,7 +1951,7 @@ export class MCPServerManager {
 
       let clientClosed = false;
 
-      const tools = wrapMCPTools(rawTools as unknown as Record<string, Tool>, {
+      const tools = wrapMCPTools(rawTools, {
         onActivity,
         onClosed: () => {
           if (instanceRef.current) instanceRef.current.isClosed = true;

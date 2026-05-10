@@ -433,7 +433,7 @@ export function wrapFetchWithAnthropicCacheControl(
     }
   };
 
-  return Object.assign(cachingFetch, baseFetch) as typeof fetch;
+  return Object.assign(cachingFetch, baseFetch);
 }
 
 /**
@@ -464,7 +464,7 @@ function wrapFetchWithMuxGatewayAutoLogout(
     return response;
   };
 
-  return Object.assign(wrappedFetch, baseFetch) as typeof fetch;
+  return Object.assign(wrappedFetch, baseFetch);
 }
 
 /**
@@ -496,7 +496,7 @@ function getProviderFetch(providerConfig: ProviderConfig): typeof fetch {
     return customFetch(input, { ...init, headers: merged });
   };
 
-  return Object.assign(wrappedFetch, customFetch) as typeof fetch;
+  return Object.assign(wrappedFetch, customFetch);
 }
 
 // ---------------------------------------------------------------------------
@@ -917,7 +917,7 @@ export class ProviderModelFactory {
 
     // Route resolution must honor the shared provider-level enabled=false switch
     // before considering legacy gateway-specific config gates.
-    if (isProviderDisabledInConfig(providerConfig as { enabled?: unknown })) {
+    if (isProviderDisabledInConfig(providerConfig)) {
       return false;
     }
 
@@ -1080,10 +1080,7 @@ export class ProviderModelFactory {
       let providerConfig = providersConfig[providerName] ?? {};
 
       // Providers can be disabled in providers.jsonc without deleting credentials.
-      if (
-        providerName !== "mux-gateway" &&
-        isProviderDisabledInConfig(providerConfig as { enabled?: unknown })
-      ) {
+      if (providerName !== "mux-gateway" && isProviderDisabledInConfig(providerConfig)) {
         return Err({ type: "provider_disabled", provider: providerName });
       }
 
@@ -1757,7 +1754,7 @@ export class ProviderModelFactory {
 
       // GitHub Copilot chooses a stock OpenAI chat model or a custom Responses model per route.
       if (providerName === "github-copilot") {
-        const creds = resolveProviderCredentials("github-copilot" as ProviderName, providerConfig);
+        const creds = resolveProviderCredentials("github-copilot", providerConfig);
         if (!creds.isConfigured) {
           return Err({ type: "api_key_not_found", provider: providerName });
         }
@@ -1840,7 +1837,7 @@ export class ProviderModelFactory {
           headers.delete("x-api-key");
           return baseFetch(input, nextInit);
         };
-        const copilotFetch = Object.assign(copilotFetchFn, baseFetch) as typeof fetch;
+        const copilotFetch = Object.assign(copilotFetchFn, baseFetch);
         const providerFetch = copilotFetch;
         const baseURL = providerConfig.baseURL ?? "https://api.githubcopilot.com";
         const apiMode = selectCopilotApiMode(modelId);

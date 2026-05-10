@@ -1322,11 +1322,7 @@ export class AIService extends EventEmitter {
         switch (chunk.type) {
           case "text-delta": {
             // Providers/SDKs can stream advisor text deltas under different field names.
-            const chunkText = extractChunkDeltaText(chunk as Record<string, unknown>, [
-              "textDelta",
-              "delta",
-              "text",
-            ]);
+            const chunkText = extractChunkDeltaText(chunk, ["textDelta", "delta", "text"]);
             if (chunkText.length > 0) {
               advisorStepCaptureRef.currentStepText += chunkText;
             }
@@ -1334,11 +1330,7 @@ export class AIService extends EventEmitter {
           }
           case "reasoning-delta": {
             // Anthropic signature updates can arrive as reasoning deltas without text.
-            const chunkText = extractChunkDeltaText(chunk as Record<string, unknown>, [
-              "text",
-              "textDelta",
-              "delta",
-            ]);
+            const chunkText = extractChunkDeltaText(chunk, ["text", "textDelta", "delta"]);
             if (chunkText.length > 0) {
               advisorStepCaptureRef.currentStepReasoning += chunkText;
             }
@@ -1490,7 +1482,7 @@ export class AIService extends EventEmitter {
             if ("workspaceId" in event && event.workspaceId !== workspaceId) {
               return;
             }
-            this.emit(event.type, event as never);
+            this.emit(event.type, event);
           },
           workspaceSessionDir: this.config.getSessionDir(workspaceId),
           planFilePath,

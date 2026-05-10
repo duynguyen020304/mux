@@ -448,7 +448,7 @@ export function useBrowserBridgeConnection(workspaceId: string): {
 
   const sendInput = (input: BrowserInputEvent) => {
     const socket = socketRef.current;
-    if (socket == null || socket.readyState !== WebSocket.OPEN) {
+    if (socket?.readyState !== WebSocket.OPEN) {
       return;
     }
 

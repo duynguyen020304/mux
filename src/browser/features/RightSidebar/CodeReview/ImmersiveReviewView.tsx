@@ -1861,7 +1861,7 @@ export const ImmersiveReviewView: React.FC<ImmersiveReviewViewProps> = (props) =
         {/* Avoid top padding here; it reads as a blank block between the controls and diff. */}
         <div
           ref={scrollContainerRef}
-          className="scrollbar-none min-h-0 min-w-0 flex-1 overflow-y-auto pb-3"
+          className="min-h-0 min-w-0 flex-1 scrollbar-none overflow-y-auto pb-3"
         >
           {props.isLoading && currentFileHunks.length === 0 ? (
             <div className="text-muted flex items-center justify-center py-12 text-sm">

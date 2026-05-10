@@ -134,13 +134,13 @@ describe("PowerModeContext", () => {
     });
 
     const nativeGetComputedStyle = window.getComputedStyle.bind(window);
-    spyOn(window, "getComputedStyle").mockImplementation(((element: Element) => {
+    spyOn(window, "getComputedStyle").mockImplementation((element: Element) => {
       if (element.tagName === "TEXTAREA") {
         return longhandOnlyStyles;
       }
 
       return nativeGetComputedStyle(element);
-    }) as typeof window.getComputedStyle);
+    });
 
     const { powerMode, textarea } = await renderHarness();
 

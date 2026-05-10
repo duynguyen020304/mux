@@ -167,9 +167,8 @@ export const AgentModePicker: React.FC<AgentModePickerProps> = (props) => {
       openPicker({ highlightAgentId: normalizedAgentId });
     };
 
-    window.addEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpen as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpen as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpen);
+    return () => window.removeEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpen);
   }, [normalizedAgentId, openPicker]);
 
   useEffect(() => {
@@ -180,9 +179,8 @@ export const AgentModePicker: React.FC<AgentModePickerProps> = (props) => {
       closePicker();
     };
 
-    window.addEventListener(CUSTOM_EVENTS.CLOSE_AGENT_PICKER, handleClose as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.CLOSE_AGENT_PICKER, handleClose as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.CLOSE_AGENT_PICKER, handleClose);
+    return () => window.removeEventListener(CUSTOM_EVENTS.CLOSE_AGENT_PICKER, handleClose);
   }, [closePicker, isPickerOpen]);
 
   // Close picker when clicking outside.

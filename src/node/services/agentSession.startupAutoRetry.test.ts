@@ -235,7 +235,7 @@ describe("AgentSession startup auto-retry recovery", () => {
       }
 
       return originalGetLastMessages(id, count);
-    }) as unknown as HistoryService["getLastMessages"];
+    });
 
     const privateSession = session as unknown as {
       startupAutoRetryCheckPromise: Promise<void> | null;
@@ -284,7 +284,7 @@ describe("AgentSession startup auto-retry recovery", () => {
         success: false as const,
         error: "persistent history read failure",
       });
-    }) as unknown as HistoryService["getLastMessages"];
+    });
 
     const privateSession = session as unknown as {
       startupAutoRetryCheckPromise: Promise<void> | null;
@@ -328,7 +328,7 @@ describe("AgentSession startup auto-retry recovery", () => {
         success: false as const,
         error: "persistent history read failure",
       });
-    }) as unknown as HistoryService["getLastMessages"];
+    });
 
     const privateSession = session as unknown as {
       runStartupRecovery: () => Promise<void>;

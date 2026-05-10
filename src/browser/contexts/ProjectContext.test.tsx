@@ -717,7 +717,7 @@ function createMockAPI(overrides: RecursivePartial<APIClient["projects"]>) {
 
   // Update the global mock
   currentClientMock = {
-    projects: projects as unknown as RecursivePartial<APIClient["projects"]>,
+    projects: projects,
     secrets: projects.secrets as unknown as RecursivePartial<APIClient["secrets"]>,
   };
 

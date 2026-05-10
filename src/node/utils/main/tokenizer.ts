@@ -112,7 +112,7 @@ function resolveModelName(modelString: string): ModelName {
       );
     }
 
-    modelName = fallbackModel as ModelName;
+    modelName = fallbackModel;
   }
 
   return modelName;

@@ -55,16 +55,16 @@ export const WORKSPACE_DEFAULTS: {
    * Default AI model for new workspaces.
    * Uses the centralized default from knownModels.ts.
    */
-  model: DEFAULT_MODEL as string,
+  model: DEFAULT_MODEL,
 
   /** Default input text for new workspaces (empty) */
-  input: "" as string,
+  input: "",
 
   /**
    * Fallback diff base for code review when trunk auto-detection is unavailable.
    * Most flows will override this with origin/<detected-trunk>.
    */
-  reviewBase: "origin/main" as string,
+  reviewBase: "origin/main",
 };
 
 // Freeze the object at runtime to prevent accidental mutation

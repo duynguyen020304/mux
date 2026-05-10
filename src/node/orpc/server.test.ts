@@ -64,6 +64,8 @@ async function waitForWebSocketRejection(ws: WebSocket): Promise<void> {
       cleanup();
       resolve();
     };
+    // ws 8.20 can emit an additional asynchronous error after rejection; keep a listener.
+    const swallowLateError = () => undefined;
 
     const onClose = () => {
       cleanup();
@@ -82,6 +84,7 @@ async function waitForWebSocketRejection(ws: WebSocket): Promise<void> {
       ws.off("open", onOpen);
     };
 
+    ws.on("error", swallowLateError);
     ws.once("error", onError);
     ws.once("close", onClose);
     ws.once("open", onOpen);

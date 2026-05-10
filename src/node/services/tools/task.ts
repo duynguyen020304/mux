@@ -264,8 +264,7 @@ export const createTaskTool: ToolFactory = (config: ToolConfiguration) => {
       // but keep runtime validation here to preserve type-safety.
       const parsedArgs = TOOL_DEFINITIONS.task.schema.safeParse(args);
       if (!parsedArgs.success) {
-        const keys =
-          args && typeof args === "object" ? Object.keys(args as Record<string, unknown>) : [];
+        const keys = args && typeof args === "object" ? Object.keys(args) : [];
         log.warn(
           "[task tool] Unexpected input validation failure (should have been caught by AI SDK)",
           {

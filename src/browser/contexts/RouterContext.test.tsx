@@ -12,7 +12,7 @@ import {
 import { RouterProvider, useRouter, type RouterContext } from "./RouterContext";
 
 function createMatchMedia(isStandalone = false): typeof window.matchMedia {
-  return ((query: string) =>
+  return (query: string) =>
     ({
       matches: isStandalone && query === "(display-mode: standalone)",
       media: query,
@@ -22,7 +22,7 @@ function createMatchMedia(isStandalone = false): typeof window.matchMedia {
       addEventListener: () => undefined,
       removeEventListener: () => undefined,
       dispatchEvent: () => true,
-    }) satisfies MediaQueryList) as typeof window.matchMedia;
+    }) satisfies MediaQueryList;
 }
 
 type NavigationType = "navigate" | "reload" | "back_forward" | "prerender";

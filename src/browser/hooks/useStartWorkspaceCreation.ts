@@ -97,16 +97,10 @@ export function useStartWorkspaceCreation({
       startWorkspaceCreation(detail.projectPath, detail);
     };
 
-    window.addEventListener(
-      CUSTOM_EVENTS.START_WORKSPACE_CREATION,
-      handleStartCreation as EventListener
-    );
+    window.addEventListener(CUSTOM_EVENTS.START_WORKSPACE_CREATION, handleStartCreation);
 
     return () =>
-      window.removeEventListener(
-        CUSTOM_EVENTS.START_WORKSPACE_CREATION,
-        handleStartCreation as EventListener
-      );
+      window.removeEventListener(CUSTOM_EVENTS.START_WORKSPACE_CREATION, handleStartCreation);
   }, [startWorkspaceCreation]);
 
   return startWorkspaceCreation;

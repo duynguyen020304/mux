@@ -611,10 +611,7 @@ export function hasAnyConfiguredProvider(providers: ProvidersConfig | null | und
       continue;
     }
 
-    if (
-      checkProviderConfigured(providerKey as ProviderName, rawConfig as ProviderConfigRaw)
-        .isConfigured
-    ) {
+    if (checkProviderConfigured(providerKey as ProviderName, rawConfig).isConfigured) {
       return true;
     }
   }

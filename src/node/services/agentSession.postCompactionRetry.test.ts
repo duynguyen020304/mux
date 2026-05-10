@@ -143,7 +143,7 @@ describe("AgentSession post-compaction context retry", () => {
     const options: SendMessageOptions = {
       model: "openai:gpt-4o",
       agentId: "exec",
-    } as unknown as SendMessageOptions;
+    };
 
     // Call streamWithHistory directly (private) to avoid needing a full user send pipeline.
     await (
@@ -353,7 +353,7 @@ describe("AgentSession execSubagentHardRestart", () => {
       experiments: {
         execSubagentHardRestart: true,
       },
-    } as unknown as SendMessageOptions;
+    };
 
     await (
       session as unknown as {
@@ -376,9 +376,7 @@ describe("AgentSession execSubagentHardRestart", () => {
       .calls[0][1] as MuxMessage | undefined;
     expect(appendedNotice?.metadata?.synthetic).toBe(true);
     expect(appendedNotice?.metadata?.uiVisible).toBe(true);
-    const noticeText = appendedNotice?.parts.find((p) => p.type === "text") as
-      | { type: "text"; text: string }
-      | undefined;
+    const noticeText = appendedNotice?.parts.find((p) => p.type === "text");
     expect(noticeText?.text).toContain("restarted");
 
     expect(
@@ -569,7 +567,7 @@ describe("AgentSession execSubagentHardRestart", () => {
       experiments: {
         execSubagentHardRestart: true,
       },
-    } as unknown as SendMessageOptions;
+    };
 
     await (
       session as unknown as {
@@ -680,7 +678,7 @@ describe("AgentSession execSubagentHardRestart", () => {
       experiments: {
         execSubagentHardRestart: true,
       },
-    } as unknown as SendMessageOptions;
+    };
 
     await (
       session as unknown as {

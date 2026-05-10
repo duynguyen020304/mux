@@ -3,6 +3,7 @@ import { sanitizeMermaidSvg } from "./Mermaid";
 import { Window } from "happy-dom";
 
 const testWindow = new Window();
+testWindow.SyntaxError = SyntaxError;
 globalThis.DOMParser = testWindow.DOMParser as unknown as typeof DOMParser;
 
 describe("sanitizeMermaidSvg", () => {

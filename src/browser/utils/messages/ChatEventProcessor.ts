@@ -369,7 +369,7 @@ export function createChatEventProcessor(): ChatEventProcessor {
         input: event.args,
         timestamp: event.timestamp,
       };
-      message.parts.push(toolPart as never);
+      message.parts.push(toolPart);
       return;
     }
 

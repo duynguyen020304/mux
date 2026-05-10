@@ -374,7 +374,7 @@ test("analytics rebuild command falls back to alert when chat input toast host i
   globalThis.CustomEvent = testWindow.CustomEvent as unknown as typeof CustomEvent;
 
   const alertMock = mock(() => undefined);
-  window.alert = alertMock as unknown as typeof window.alert;
+  window.alert = alertMock;
 
   try {
     const sources = mk({

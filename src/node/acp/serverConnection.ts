@@ -105,14 +105,14 @@ function isUnreachableError(error: unknown): boolean {
   }
 
   // Node.js network errors carry an errno `code` property.
-  if ("code" in error && typeof (error as { code: unknown }).code === "string") {
+  if ("code" in error && typeof error.code === "string") {
     return UNREACHABLE_ERROR_CODES.has((error as { code: string }).code);
   }
 
   // ws WebSocket emits an error whose message starts with the error code or
   // wraps a Node network error in `.cause`.
   if ("cause" in error) {
-    return isUnreachableError((error as { cause: unknown }).cause);
+    return isUnreachableError(error.cause);
   }
 
   if (error instanceof Error) {
@@ -230,7 +230,7 @@ async function connectViaWebSocket(
 
   // oRPC expects a browser-like WebSocket surface; ws is compatible at runtime.
   const link = new WebSocketRPCLink({
-    websocket: websocket as unknown as globalThis.WebSocket,
+    websocket: websocket,
   });
   const client = createTypedClient(link);
 

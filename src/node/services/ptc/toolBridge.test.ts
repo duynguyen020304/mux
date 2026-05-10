@@ -151,7 +151,7 @@ describe("ToolBridge", () => {
 
       // Call with invalid args - should throw
       // Type assertion needed because Record indexing returns T | undefined for ESLint
-      const fileRead = registeredMux.file_read as (...args: unknown[]) => Promise<unknown>;
+      const fileRead = registeredMux.file_read;
       try {
         await fileRead({ wrongField: "test" });
         expect.unreachable("Should have thrown");
@@ -249,7 +249,7 @@ describe("ToolBridge", () => {
       bridge.register(mockRuntime);
 
       // Type assertion needed because Record indexing returns T | undefined for ESLint
-      const fileRead = registeredMux.file_read as (...args: unknown[]) => Promise<unknown>;
+      const fileRead = registeredMux.file_read;
       try {
         await fileRead({ filePath: "test.txt" });
         expect.unreachable("Should have thrown");

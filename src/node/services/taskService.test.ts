@@ -1118,7 +1118,7 @@ describe("TaskService", () => {
     const { workspaceService, sendMessage } = createWorkspaceServiceMocks();
     const { taskService } = createTaskServiceHarness(config, {
       workspaceService,
-      initStateManager: initStateManager as unknown as InitStateManager,
+      initStateManager: initStateManager,
     });
 
     const running = await taskService.create({

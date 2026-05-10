@@ -707,9 +707,7 @@ describe("StreamManager - sequential tool execution", () => {
     createStreamResult(request, new AbortController());
 
     expect(streamTextSpy).toHaveBeenCalledTimes(1);
-    const capturedTools = streamTextSpy.mock.calls[0]?.[0]?.tools as
-      | StreamRequestConfigForTests["tools"]
-      | undefined;
+    const capturedTools = streamTextSpy.mock.calls[0]?.[0]?.tools;
     expect(capturedTools).toBeDefined();
     expect(capturedTools).not.toBe(tools);
     expect(capturedTools!.a).not.toBe(tools.a);

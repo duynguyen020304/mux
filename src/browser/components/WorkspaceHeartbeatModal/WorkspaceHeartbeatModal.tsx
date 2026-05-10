@@ -114,8 +114,7 @@ export function WorkspaceHeartbeatModal(props: WorkspaceHeartbeatModalProps) {
     const workspaceChanged = previousWorkspaceIdRef.current !== props.workspaceId;
     const lastSyncedSettings = lastSyncedSettingsRef.current;
     const settingsChanged =
-      lastSyncedSettings == null ||
-      lastSyncedSettings.enabled !== settings.enabled ||
+      lastSyncedSettings?.enabled !== settings.enabled ||
       lastSyncedSettings.intervalMs !== settings.intervalMs ||
       lastSyncedSettings.contextMode !== settingsContextMode ||
       lastSyncedSettings.message !== settings.message;

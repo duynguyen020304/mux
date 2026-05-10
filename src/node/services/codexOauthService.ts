@@ -366,7 +366,7 @@ export class CodexOauthService {
       return this.cachedAuth;
     }
     const providersConfig = this.config.loadProvidersConfig() ?? {};
-    const openaiConfig = providersConfig.openai as Record<string, unknown> | undefined;
+    const openaiConfig = providersConfig.openai;
     const auth = parseCodexOauthAuth(openaiConfig?.codexOauth);
     this.cachedAuth = auth;
     return auth;

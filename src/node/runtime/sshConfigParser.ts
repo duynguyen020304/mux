@@ -224,7 +224,7 @@ function applyNegatedExecMatch(
     );
 
     if (proxyLine?.type === SSHConfig.DIRECTIVE) {
-      computed.ProxyCommand = proxyLine.value as ComputedConfigValue;
+      computed.ProxyCommand = proxyLine.value;
       return;
     }
   }

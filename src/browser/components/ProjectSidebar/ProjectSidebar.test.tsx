@@ -335,9 +335,7 @@ function installProjectSidebarTestDoubles() {
   spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(
     () => popoverErrors[popoverErrorIndex++] ?? fallbackPopoverError
   );
-  spyOn(ReactDndModule, "DndProvider").mockImplementation(
-    TestWrapper as unknown as typeof ReactDndModule.DndProvider
-  );
+  spyOn(ReactDndModule, "DndProvider").mockImplementation(TestWrapper);
   spyOn(ReactDndModule, "useDrag").mockImplementation(
     (() =>
       [
@@ -454,42 +452,42 @@ function installProjectSidebarTestDoubles() {
 
   spyOn(ExperimentsModule, "useExperimentValue").mockImplementation(() => true);
 
-  spyOn(TooltipModule, "Tooltip").mockImplementation(
-    TestWrapper as unknown as typeof TooltipModule.Tooltip
-  );
+  spyOn(TooltipModule, "Tooltip").mockImplementation(TestWrapper);
   spyOn(TooltipModule, "TooltipTrigger").mockImplementation(
     TestWrapper as unknown as typeof TooltipModule.TooltipTrigger
   );
   spyOn(TooltipModule, "TooltipContent").mockImplementation(
     (() => null) as unknown as typeof TooltipModule.TooltipContent
   );
-  spyOn(SidebarCollapseButtonModule, "SidebarCollapseButton").mockImplementation((() => (
+  spyOn(SidebarCollapseButtonModule, "SidebarCollapseButton").mockImplementation(() => (
     <button type="button">toggle sidebar</button>
-  )) as unknown as typeof SidebarCollapseButtonModule.SidebarCollapseButton);
-  spyOn(ConfirmationModalModule, "ConfirmationModal").mockImplementation(((props: {
-    isOpen: boolean;
-    title: string;
-    description?: string;
-    warning?: string;
-    confirmLabel?: string;
-    onConfirm: () => void | Promise<void>;
-    onCancel: () => void;
-  }) => {
-    latestArchiveConfirmationModalProps = props;
-    return props.isOpen ? (
-      <div data-testid="archive-confirmation-modal">
-        <div>{props.title}</div>
-        {props.description ? <div>{props.description}</div> : null}
-        {props.warning ? <div>{props.warning}</div> : null}
-        <button type="button" onClick={() => void props.onConfirm()}>
-          {props.confirmLabel ?? "Confirm"}
-        </button>
-        <button type="button" onClick={props.onCancel}>
-          Cancel
-        </button>
-      </div>
-    ) : null;
-  }) as unknown as typeof ConfirmationModalModule.ConfirmationModal);
+  ));
+  spyOn(ConfirmationModalModule, "ConfirmationModal").mockImplementation(
+    (props: {
+      isOpen: boolean;
+      title: string;
+      description?: string;
+      warning?: string;
+      confirmLabel?: string;
+      onConfirm: () => void | Promise<void>;
+      onCancel: () => void;
+    }) => {
+      latestArchiveConfirmationModalProps = props;
+      return props.isOpen ? (
+        <div data-testid="archive-confirmation-modal">
+          <div>{props.title}</div>
+          {props.description ? <div>{props.description}</div> : null}
+          {props.warning ? <div>{props.warning}</div> : null}
+          <button type="button" onClick={() => void props.onConfirm()}>
+            {props.confirmLabel ?? "Confirm"}
+          </button>
+          <button type="button" onClick={props.onCancel}>
+            Cancel
+          </button>
+        </div>
+      ) : null;
+    }
+  );
   spyOn(ProjectDeleteConfirmationModalModule, "ProjectDeleteConfirmationModal").mockImplementation(
     ((props: {
       isOpen: boolean;
@@ -509,24 +507,12 @@ function installProjectSidebarTestDoubles() {
   spyOn(WorkspaceStatusIndicatorModule, "WorkspaceStatusIndicator").mockImplementation((() => (
     <div data-testid="workspace-status-indicator" />
   )) as unknown as typeof WorkspaceStatusIndicatorModule.WorkspaceStatusIndicator);
-  spyOn(PopoverErrorModule, "PopoverError").mockImplementation(
-    (() => null) as unknown as typeof PopoverErrorModule.PopoverError
-  );
-  spyOn(SectionHeaderModule, "SectionHeader").mockImplementation(
-    (() => null) as unknown as typeof SectionHeaderModule.SectionHeader
-  );
-  spyOn(WorkspaceSectionDropZoneModule, "WorkspaceSectionDropZone").mockImplementation(
-    TestWrapper as unknown as typeof WorkspaceSectionDropZoneModule.WorkspaceSectionDropZone
-  );
-  spyOn(WorkspaceDragLayerModule, "WorkspaceDragLayer").mockImplementation(
-    (() => null) as unknown as typeof WorkspaceDragLayerModule.WorkspaceDragLayer
-  );
-  spyOn(SectionDragLayerModule, "SectionDragLayer").mockImplementation(
-    (() => null) as unknown as typeof SectionDragLayerModule.SectionDragLayer
-  );
-  spyOn(DraggableSectionModule, "DraggableSection").mockImplementation(
-    TestWrapper as unknown as typeof DraggableSectionModule.DraggableSection
-  );
+  spyOn(PopoverErrorModule, "PopoverError").mockImplementation(() => null);
+  spyOn(SectionHeaderModule, "SectionHeader").mockImplementation(() => null);
+  spyOn(WorkspaceSectionDropZoneModule, "WorkspaceSectionDropZone").mockImplementation(TestWrapper);
+  spyOn(WorkspaceDragLayerModule, "WorkspaceDragLayer").mockImplementation(() => null);
+  spyOn(SectionDragLayerModule, "SectionDragLayer").mockImplementation(() => null);
+  spyOn(DraggableSectionModule, "DraggableSection").mockImplementation(TestWrapper);
   void mock.module("../PositionedMenu/PositionedMenu", () => ({
     PositionedMenu: (props: { open: boolean; children: React.ReactNode }) =>
       props.open ? <div data-testid="project-actions-menu">{props.children}</div> : null,
@@ -1206,14 +1192,11 @@ describe("ProjectSidebar archive confirmations", () => {
       }
     );
 
-    spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(
-      () =>
-        ({
-          error: null,
-          showError: archivePopoverShowErrorMock,
-          clearError: mock(() => undefined),
-        }) as unknown as ReturnType<typeof PopoverErrorHookModule.usePopoverError>
-    );
+    spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(() => ({
+      error: null,
+      showError: archivePopoverShowErrorMock,
+      clearError: mock(() => undefined),
+    }));
 
     const workspace = {
       ...createWorkspace("archive-stable-untracked"),
@@ -1255,14 +1238,11 @@ describe("ProjectSidebar archive errors", () => {
       userProjects: new Map([["/projects/demo-project", { workspaces: [] }]]),
     });
     installProjectSidebarTestDoubles();
-    spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(
-      () =>
-        ({
-          error: null,
-          showError: archivePopoverShowErrorMock,
-          clearError: mock(() => undefined),
-        }) as unknown as ReturnType<typeof PopoverErrorHookModule.usePopoverError>
-    );
+    spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(() => ({
+      error: null,
+      showError: archivePopoverShowErrorMock,
+      clearError: mock(() => undefined),
+    }));
   });
 
   afterEach(() => {

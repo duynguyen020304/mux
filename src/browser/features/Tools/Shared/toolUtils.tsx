@@ -93,7 +93,7 @@ export function isToolErrorResult(val: unknown): val is ToolErrorResult {
  */
 export function isFailedToolOutput(output: unknown): boolean {
   if (!output || typeof output !== "object") return false;
-  if ("success" in output && (output as { success: unknown }).success === false) return true;
+  if ("success" in output && output.success === false) return true;
   if ("error" in output) return true;
   return false;
 }

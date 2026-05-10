@@ -34,7 +34,7 @@ export { createDisplayUsage };
  */
 export function extractToolOutputData(output: unknown): unknown {
   if (typeof output === "object" && output !== null && "value" in output) {
-    return (output as { value: unknown }).value;
+    return output.value;
   }
   return output;
 }

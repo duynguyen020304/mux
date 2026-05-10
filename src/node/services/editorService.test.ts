@@ -30,7 +30,7 @@ describe("EditorService", () => {
 
     const mockConfig: Pick<Config, "getAllWorkspaceMetadata"> = {
       getAllWorkspaceMetadata: () => Promise.resolve([workspace]),
-    } as unknown as Pick<Config, "getAllWorkspaceMetadata">;
+    };
 
     const editorService = new EditorService(mockConfig as Config);
 
@@ -58,7 +58,7 @@ describe("EditorService", () => {
 
     const mockConfig: Pick<Config, "getAllWorkspaceMetadata"> = {
       getAllWorkspaceMetadata: () => Promise.resolve([workspace]),
-    } as unknown as Pick<Config, "getAllWorkspaceMetadata">;
+    };
 
     const editorService = new EditorService(mockConfig as Config);
 

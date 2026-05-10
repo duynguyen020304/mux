@@ -180,7 +180,7 @@ export class VoiceService {
       resolvedApiKey = (await this.opResolver(apiKey)) ?? apiKey;
     }
 
-    const opReferenceUnresolved = isOpReference(resolvedApiKey as unknown);
+    const opReferenceUnresolved = isOpReference(resolvedApiKey);
     if (opReferenceUnresolved) {
       log.warn("Voice transcription skipped: 1Password key could not be resolved");
       return {

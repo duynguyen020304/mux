@@ -202,7 +202,7 @@ export class DesktopBridgeServer {
     }
 
     const liveSession = this.desktopSessionManager.getLiveSessionConnection(payload.workspaceId);
-    if (!liveSession || liveSession.sessionId !== payload.sessionId) {
+    if (liveSession?.sessionId !== payload.sessionId) {
       log.warn("DesktopBridgeServer: rejecting upgrade with missing or mismatched session", {
         workspaceId: payload.workspaceId,
         expectedSessionId: payload.sessionId,

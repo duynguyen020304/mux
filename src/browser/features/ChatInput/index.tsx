@@ -1508,9 +1508,8 @@ const ChatInputInner: React.FC<ChatInputProps> = (props) => {
         appendText(text);
       }
     };
-    window.addEventListener(CUSTOM_EVENTS.UPDATE_CHAT_INPUT, handler as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.UPDATE_CHAT_INPUT, handler as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.UPDATE_CHAT_INPUT, handler);
+    return () => window.removeEventListener(CUSTOM_EVENTS.UPDATE_CHAT_INPUT, handler);
   }, [appendText, restoreText, restoreDraft, applyDraftFromPending, getDraft, editingMessageForUi]);
 
   // Allow external components to open the Model Selector
@@ -1519,9 +1518,8 @@ const ChatInputInner: React.FC<ChatInputProps> = (props) => {
       // Open the inline ModelSelector and let it take focus itself
       modelSelectorRef.current?.open();
     };
-    window.addEventListener(CUSTOM_EVENTS.OPEN_MODEL_SELECTOR, handler as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.OPEN_MODEL_SELECTOR, handler as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.OPEN_MODEL_SELECTOR, handler);
+    return () => window.removeEventListener(CUSTOM_EVENTS.OPEN_MODEL_SELECTOR, handler);
   }, []);
 
   // Show toast when thinking level is changed via command palette (workspace only)
@@ -1550,9 +1548,8 @@ const ChatInputInner: React.FC<ChatInputProps> = (props) => {
       });
     };
 
-    window.addEventListener(CUSTOM_EVENTS.THINKING_LEVEL_TOAST, handler as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.THINKING_LEVEL_TOAST, handler as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.THINKING_LEVEL_TOAST, handler);
+    return () => window.removeEventListener(CUSTOM_EVENTS.THINKING_LEVEL_TOAST, handler);
   }, [variant, props, pushToast]);
 
   // Show toast feedback for analytics rebuild command palette action.
@@ -1573,9 +1570,8 @@ const ChatInputInner: React.FC<ChatInputProps> = (props) => {
       });
     };
 
-    window.addEventListener(CUSTOM_EVENTS.ANALYTICS_REBUILD_TOAST, handler as EventListener);
-    return () =>
-      window.removeEventListener(CUSTOM_EVENTS.ANALYTICS_REBUILD_TOAST, handler as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.ANALYTICS_REBUILD_TOAST, handler);
+    return () => window.removeEventListener(CUSTOM_EVENTS.ANALYTICS_REBUILD_TOAST, handler);
   }, [pushToast]);
 
   // Voice input: command palette toggle + global recording keybinds
@@ -1593,9 +1589,9 @@ const ChatInputInner: React.FC<ChatInputProps> = (props) => {
       voiceInput.toggle();
     };
 
-    window.addEventListener(CUSTOM_EVENTS.TOGGLE_VOICE_INPUT, handleToggle as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.TOGGLE_VOICE_INPUT, handleToggle);
     return () => {
-      window.removeEventListener(CUSTOM_EVENTS.TOGGLE_VOICE_INPUT, handleToggle as EventListener);
+      window.removeEventListener(CUSTOM_EVENTS.TOGGLE_VOICE_INPUT, handleToggle);
     };
   }, [voiceInput, pushToast, voiceInputUnavailableMessage]);
 

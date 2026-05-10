@@ -1,4 +1,4 @@
-declare module "@novnc/novnc/lib/rfb" {
+declare module "@novnc/novnc" {
   interface RFBOptions {
     /** WebSocket protocols to use */
     wsProtocols?: string | string[];

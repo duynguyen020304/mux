@@ -157,14 +157,11 @@ function installWorkspaceMenuBarTestDoubles() {
   spyOn(PersistedStateModule, "usePersistedState").mockImplementation(
     <T,>(_key: string, defaultValue: T) => [defaultValue, mock(() => undefined)] as const
   );
-  spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(
-    () =>
-      ({
-        error: null,
-        showError: archiveShowErrorMock,
-        clearError: () => undefined,
-      }) as unknown as ReturnType<typeof PopoverErrorHookModule.usePopoverError>
-  );
+  spyOn(PopoverErrorHookModule, "usePopoverError").mockImplementation(() => ({
+    error: null,
+    showError: archiveShowErrorMock,
+    clearError: () => undefined,
+  }));
   spyOn(DesktopTitlebarModule, "isDesktopMode").mockImplementation(() => false);
   spyOn(TelemetryEnabledContextModule, "useLinkSharingEnabled").mockImplementation(() => false);
   spyOn(TutorialContextModule, "useTutorial").mockImplementation(
@@ -177,34 +174,23 @@ function installWorkspaceMenuBarTestDoubles() {
     Promise.resolve({ success: true as const })
   );
 
-  spyOn(GitStatusIndicatorModule, "GitStatusIndicator").mockImplementation(
-    (() => null) as unknown as typeof GitStatusIndicatorModule.GitStatusIndicator
-  );
+  spyOn(GitStatusIndicatorModule, "GitStatusIndicator").mockImplementation(() => null);
   spyOn(MultiProjectGitStatusIndicatorModule, "MultiProjectGitStatusIndicator").mockImplementation(
-    (() =>
-      null) as unknown as typeof MultiProjectGitStatusIndicatorModule.MultiProjectGitStatusIndicator
+    () => null
   );
-  spyOn(RuntimeBadgeModule, "RuntimeBadge").mockImplementation(
-    (() => null) as unknown as typeof RuntimeBadgeModule.RuntimeBadge
-  );
+  spyOn(RuntimeBadgeModule, "RuntimeBadge").mockImplementation(() => null);
   spyOn(BranchSelectorModule, "BranchSelector").mockImplementation(
     (() => null) as unknown as typeof BranchSelectorModule.BranchSelector
   );
-  spyOn(WorkspaceMCPModalModule, "WorkspaceMCPModal").mockImplementation(
-    (() => null) as unknown as typeof WorkspaceMCPModalModule.WorkspaceMCPModal
-  );
-  spyOn(TooltipModule, "Tooltip").mockImplementation(
-    TestWrapper as unknown as typeof TooltipModule.Tooltip
-  );
+  spyOn(WorkspaceMCPModalModule, "WorkspaceMCPModal").mockImplementation(() => null);
+  spyOn(TooltipModule, "Tooltip").mockImplementation(TestWrapper);
   spyOn(TooltipModule, "TooltipTrigger").mockImplementation(
     TestWrapper as unknown as typeof TooltipModule.TooltipTrigger
   );
   spyOn(TooltipModule, "TooltipContent").mockImplementation(
     (() => null) as unknown as typeof TooltipModule.TooltipContent
   );
-  spyOn(PopoverModule, "Popover").mockImplementation(
-    TestWrapper as unknown as typeof PopoverModule.Popover
-  );
+  spyOn(PopoverModule, "Popover").mockImplementation(TestWrapper);
   spyOn(PopoverModule, "PopoverTrigger").mockImplementation(
     TestWrapper as unknown as typeof PopoverModule.PopoverTrigger
   );
@@ -214,54 +200,48 @@ function installWorkspaceMenuBarTestDoubles() {
   spyOn(CheckboxModule, "Checkbox").mockImplementation(
     (() => null) as unknown as typeof CheckboxModule.Checkbox
   );
-  spyOn(DebugLlmRequestModalModule, "DebugLlmRequestModal").mockImplementation(
-    (() => null) as unknown as typeof DebugLlmRequestModalModule.DebugLlmRequestModal
-  );
-  spyOn(WorkspaceLinksModule, "WorkspaceLinks").mockImplementation(
-    (() => null) as unknown as typeof WorkspaceLinksModule.WorkspaceLinks
-  );
+  spyOn(DebugLlmRequestModalModule, "DebugLlmRequestModal").mockImplementation(() => null);
+  spyOn(WorkspaceLinksModule, "WorkspaceLinks").mockImplementation(() => null);
   spyOn(ShareTranscriptDialogModule, "ShareTranscriptDialog").mockImplementation(
     (() => null) as unknown as typeof ShareTranscriptDialogModule.ShareTranscriptDialog
   );
-  spyOn(ConfirmationModalModule, "ConfirmationModal").mockImplementation(((props: {
-    isOpen: boolean;
-    title: string;
-    description?: React.ReactNode;
-    warning?: React.ReactNode;
-    confirmLabel?: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-  }) =>
-    props.isOpen ? (
-      <div data-testid="archive-confirmation-modal">
-        <div>{props.title}</div>
-        {props.description}
-        {props.warning}
-        <button type="button" onClick={props.onConfirm}>
-          {props.confirmLabel ?? "Confirm"}
-        </button>
-        <button type="button" onClick={props.onCancel}>
-          Cancel
-        </button>
-      </div>
-    ) : null) as unknown as typeof ConfirmationModalModule.ConfirmationModal);
-  spyOn(PopoverErrorModule, "PopoverError").mockImplementation(
-    (() => null) as unknown as typeof PopoverErrorModule.PopoverError
+  spyOn(ConfirmationModalModule, "ConfirmationModal").mockImplementation(
+    (props: {
+      isOpen: boolean;
+      title: string;
+      description?: React.ReactNode;
+      warning?: React.ReactNode;
+      confirmLabel?: string;
+      onConfirm: () => void;
+      onCancel: () => void;
+    }) =>
+      props.isOpen ? (
+        <div data-testid="archive-confirmation-modal">
+          <div>{props.title}</div>
+          {props.description}
+          {props.warning}
+          <button type="button" onClick={props.onConfirm}>
+            {props.confirmLabel ?? "Confirm"}
+          </button>
+          <button type="button" onClick={props.onCancel}>
+            Cancel
+          </button>
+        </div>
+      ) : null
   );
+  spyOn(PopoverErrorModule, "PopoverError").mockImplementation(() => null);
   spyOn(WorkspaceActionsMenuContentModule, "WorkspaceActionsMenuContent").mockImplementation(
-    ((props: { onArchiveChat?: ((anchorEl: HTMLElement) => void) | null }) =>
+    (props: { onArchiveChat?: ((anchorEl: HTMLElement) => void) | null }) =>
       props.onArchiveChat ? (
         <button type="button" onClick={(event) => props.onArchiveChat?.(event.currentTarget)}>
           Archive chat
         </button>
-      ) : null) as unknown as typeof WorkspaceActionsMenuContentModule.WorkspaceActionsMenuContent
+      ) : null
   );
   spyOn(WorkspaceTerminalIconModule, "WorkspaceTerminalIcon").mockImplementation(
     (() => null) as unknown as typeof WorkspaceTerminalIconModule.WorkspaceTerminalIcon
   );
-  spyOn(SkillIndicatorModule, "SkillIndicator").mockImplementation(
-    (() => null) as unknown as typeof SkillIndicatorModule.SkillIndicator
-  );
+  spyOn(SkillIndicatorModule, "SkillIndicator").mockImplementation(() => null);
 }
 
 const defaultProps: React.ComponentProps<typeof WorkspaceMenuBar> = {

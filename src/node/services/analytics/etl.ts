@@ -531,7 +531,7 @@ function parsePersistedMessage(
 ): PersistedMessage | null {
   try {
     const parsed = JSON.parse(line) as unknown;
-    return isRecord(parsed) ? (parsed as PersistedMessage) : null;
+    return isRecord(parsed) ? parsed : null;
   } catch (error) {
     log.warn("[analytics-etl] Skipping malformed chat.jsonl line", {
       workspaceId,

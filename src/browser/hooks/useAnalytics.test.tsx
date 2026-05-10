@@ -12,7 +12,6 @@ import type { AppRouter } from "@/node/orpc/router";
 import type { OrpcServer } from "@/node/orpc/server";
 import type { ORPCContext } from "@/node/orpc/context";
 import type * as APIModule from "@/browser/contexts/API";
-import type { APIClient } from "@/browser/contexts/API";
 import { requireTestModule } from "@/browser/testUtils";
 import type { SavedQuery } from "@/common/types/savedQueries";
 import type * as OrpcServerModule from "@/node/orpc/server";
@@ -151,7 +150,7 @@ function renderAnalyticsHook<TResult>(callback: () => TResult) {
 
   return renderHook(callback, {
     wrapper: (props: { children: React.ReactNode }) => (
-      <APIProvider client={apiClient as unknown as APIClient}>{props.children}</APIProvider>
+      <APIProvider client={apiClient}>{props.children}</APIProvider>
     ),
   });
 }

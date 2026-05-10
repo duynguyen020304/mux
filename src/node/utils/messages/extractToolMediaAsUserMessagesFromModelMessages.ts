@@ -44,7 +44,7 @@ export async function extractToolMediaAsUserMessagesFromModelMessages(
           return part;
         }
 
-        const extracted = extractAttachmentsFromToolOutput(part.output as unknown);
+        const extracted = extractAttachmentsFromToolOutput(part.output);
         if (extracted == null) {
           return part;
         }
@@ -76,7 +76,7 @@ export async function extractToolMediaAsUserMessagesFromModelMessages(
         return part;
       }
 
-      const extracted = extractAttachmentsFromToolOutput(part.output as unknown);
+      const extracted = extractAttachmentsFromToolOutput(part.output);
       if (extracted == null) {
         return part;
       }

@@ -98,13 +98,11 @@ function installPersistedStateMocks(): () => void {
   const readPersistedStringSpy = spyOn(
     PersistedStateModule,
     "readPersistedString"
-  ).mockImplementation(readPersistedStringMock as typeof PersistedStateModule.readPersistedString);
+  ).mockImplementation(readPersistedStringMock);
   const updatePersistedStateSpy = spyOn(
     PersistedStateModule,
     "updatePersistedState"
-  ).mockImplementation(
-    updatePersistedStateMock as typeof PersistedStateModule.updatePersistedState
-  );
+  ).mockImplementation(updatePersistedStateMock);
 
   return () => {
     readPersistedStateSpy.mockRestore();
@@ -395,7 +393,7 @@ const setupWindow = ({
 
   const windowInstance = new GlobalWindow();
   globalThis.window = windowInstance as unknown as WindowWithApi;
-  const windowWithApi = globalThis.window as WindowWithApi;
+  const windowWithApi = globalThis.window;
 
   const apiMock: WindowApi = {
     tokenizer: {
@@ -486,7 +484,7 @@ const setupWindow = ({
   windowWithApi.api = apiMock;
 
   globalThis.document = windowInstance.document as unknown as Document;
-  globalThis.localStorage = windowInstance.localStorage as unknown as Storage;
+  globalThis.localStorage = windowInstance.localStorage;
 
   return {
     projectsApi: { listBranches: listBranchesMock },

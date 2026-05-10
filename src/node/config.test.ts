@@ -1019,9 +1019,7 @@ describe("Config", () => {
     };
 
     beforeEach(() => {
-      originalGatewayEnv = Object.fromEntries(
-        gatewayEnvKeys.map((key) => [key, process.env[key]])
-      ) as Partial<Record<(typeof gatewayEnvKeys)[number], string | undefined>>;
+      originalGatewayEnv = Object.fromEntries(gatewayEnvKeys.map((key) => [key, process.env[key]]));
 
       for (const key of gatewayEnvKeys) {
         delete process.env[key];

@@ -149,8 +149,8 @@ describe("sanitizeToolInputs", () => {
             toolCallId: "toolu_null",
             toolName: "bash",
             state: "output-available",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            input: null as any,
+
+            input: null,
             output: { error: "Invalid" },
           },
         ],
@@ -176,8 +176,8 @@ describe("sanitizeToolInputs", () => {
             toolCallId: "toolu_array",
             toolName: "bash",
             state: "output-available",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            input: ["not", "valid"] as any,
+
+            input: ["not", "valid"],
             output: { error: "Invalid" },
           },
         ],

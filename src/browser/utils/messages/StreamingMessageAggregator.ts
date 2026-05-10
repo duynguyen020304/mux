@@ -2194,7 +2194,7 @@ export class StreamingMessageAggregator {
       input: data.args,
       timestamp: data.timestamp,
     };
-    message.parts.push(toolPart as never);
+    message.parts.push(toolPart);
 
     // Track tokens for tool input
     this.trackDelta(data.messageId, data.tokens, data.timestamp, "tool-args");
@@ -2526,11 +2526,11 @@ export class StreamingMessageAggregator {
       return false;
     }
 
-    if (this.appliedReplayInitEvents.has(data as object)) {
+    if (this.appliedReplayInitEvents.has(data)) {
       return true;
     }
 
-    this.appliedReplayInitEvents.add(data as object);
+    this.appliedReplayInitEvents.add(data);
     return false;
   }
 

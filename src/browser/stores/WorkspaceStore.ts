@@ -1488,7 +1488,7 @@ export class WorkspaceStore {
       if (typeof cancelIdleCallback === "function") {
         cancelIdleCallback(handle);
       } else {
-        clearTimeout(handle as unknown as number);
+        clearTimeout(handle);
       }
       this.deltaIdleHandles.delete(workspaceId);
     }
@@ -1936,7 +1936,7 @@ export class WorkspaceStore {
         }
       }
       return timestamps;
-    }) as Record<string, number>;
+    });
   }
 
   /**
@@ -2596,11 +2596,7 @@ export class WorkspaceStore {
     next: { activeCount: number; totalSessions: number }
   ): void {
     const prev = this.workspaceTerminalActivity.get(workspaceId);
-    if (
-      prev &&
-      prev.activeCount === next.activeCount &&
-      prev.totalSessions === next.totalSessions
-    ) {
+    if (prev?.activeCount === next.activeCount && prev.totalSessions === next.totalSessions) {
       return;
     }
 

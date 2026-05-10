@@ -169,7 +169,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -222,7 +222,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -282,7 +282,7 @@ describe("AgentSession switch_agent target validation", () => {
       try {
         const internals = session as unknown as SessionInternals;
         const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-        internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+        internals.sendMessage = sendMessageMock;
 
         const result = await internals.dispatchAgentSwitch(
           {
@@ -443,7 +443,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -487,7 +487,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -541,7 +541,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -579,7 +579,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -613,7 +613,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -649,7 +649,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -687,7 +687,7 @@ describe("AgentSession switch_agent target validation", () => {
     try {
       const internals = session as unknown as SessionInternals;
       const sendMessageMock = mock(() => Promise.resolve({ success: true as const }));
-      internals.sendMessage = sendMessageMock as unknown as SessionInternals["sendMessage"];
+      internals.sendMessage = sendMessageMock;
 
       for (let attempt = 0; attempt < 3; attempt += 1) {
         const allowed = await internals.dispatchAgentSwitch(
@@ -733,7 +733,7 @@ describe("AgentSession switch_agent target validation", () => {
           success: false as const,
           error: { type: "api_key_not_found", provider: "anthropic" },
         })
-      ) as unknown as SessionInternals["sendMessage"];
+      );
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -780,7 +780,7 @@ describe("AgentSession switch_agent target validation", () => {
           success: false as const,
           error: { type: "provider_not_supported", provider: "anthropic" },
         })
-      ) as unknown as SessionInternals["sendMessage"];
+      );
 
       const result = await internals.dispatchAgentSwitch(
         {
@@ -815,8 +815,7 @@ describe("AgentSession switch_agent target validation", () => {
 
     try {
       const internals = session as unknown as SessionInternals;
-      internals.dispatchAgentSwitch = (() =>
-        Promise.reject(new Error("handoff exploded"))) as SessionInternals["dispatchAgentSwitch"];
+      internals.dispatchAgentSwitch = () => Promise.reject(new Error("handoff exploded"));
 
       aiEmitter.emit("stream-end", {
         type: "stream-end",

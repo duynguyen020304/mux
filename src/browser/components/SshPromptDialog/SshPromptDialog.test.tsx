@@ -38,7 +38,7 @@ function createMockIterableSubscription<T>(): ControlledSubscription<T> {
   let closed = false;
 
   const doneResult = (): IteratorResult<T> => ({
-    value: undefined as unknown as T,
+    value: undefined,
     done: true,
   });
 

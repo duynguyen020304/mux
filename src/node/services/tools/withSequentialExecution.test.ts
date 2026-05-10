@@ -154,18 +154,12 @@ describe("withSequentialExecution", () => {
     expect(wrappedTools).toBeDefined();
 
     const controller = new AbortController();
-    const firstPromise = callWrappedExecute(
-      wrappedTools!.a as Record<string, unknown>,
-      {} as never
-    );
+    const firstPromise = callWrappedExecute(wrappedTools!.a, {});
     await startedA.promise;
 
-    const secondPromise = callWrappedExecute(
-      wrappedTools!.b as Record<string, unknown>,
-      {
-        abortSignal: controller.signal,
-      } as never
-    );
+    const secondPromise = callWrappedExecute(wrappedTools!.b, {
+      abortSignal: controller.signal,
+    });
     controller.abort();
 
     try {

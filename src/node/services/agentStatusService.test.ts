@@ -67,14 +67,12 @@ describe("AgentStatusService", () => {
       name: workspaceId,
       path: "/test/path",
       ...overrides,
-    } as unknown as Workspace;
+    };
   }
 
   function makeProjectsConfig(workspaces: Workspace[]): ProjectsConfig {
     return {
-      projects: new Map<string, ProjectConfig>([
-        [projectPath, { workspaces } as unknown as ProjectConfig],
-      ]),
+      projects: new Map<string, ProjectConfig>([[projectPath, { workspaces }]]),
     };
   }
 
@@ -249,7 +247,7 @@ describe("AgentStatusService", () => {
   test("empty workspaces consume observed recency so they do not starve populated workspaces", async () => {
     const emptyWorkspaceId = "ws-empty";
     projectsConfig = makeProjectsConfig([
-      makeWorkspaceEntry({ id: emptyWorkspaceId, name: emptyWorkspaceId } as Partial<Workspace>),
+      makeWorkspaceEntry({ id: emptyWorkspaceId, name: emptyWorkspaceId }),
       makeWorkspaceEntry(),
     ]);
     await historyHandle.historyService.appendToHistory(
@@ -457,7 +455,7 @@ describe("AgentStatusService", () => {
   test("dedup skips consume stale recency priority after the history catchup window", async () => {
     const staleWorkspaceId = "ws-stale-recency";
     projectsConfig = makeProjectsConfig([
-      makeWorkspaceEntry({ id: staleWorkspaceId, name: staleWorkspaceId } as Partial<Workspace>),
+      makeWorkspaceEntry({ id: staleWorkspaceId, name: staleWorkspaceId }),
       makeWorkspaceEntry(),
     ]);
     await historyHandle.historyService.appendToHistory(
@@ -563,13 +561,9 @@ describe("AgentStatusService", () => {
     // scheduler must prioritize least-recently-run workspaces.
     const projectPathLocal = "/test/round-robin-project";
     const ids = ["ws-a", "ws-b", "ws-c"];
-    const workspaces = ids.map(
-      (id) => ({ id, name: id, path: `/test/path/${id}` }) as unknown as Workspace
-    );
+    const workspaces = ids.map((id) => ({ id, name: id, path: `/test/path/${id}` }));
     projectsConfig = {
-      projects: new Map<string, ProjectConfig>([
-        [projectPathLocal, { workspaces } as unknown as ProjectConfig],
-      ]),
+      projects: new Map<string, ProjectConfig>([[projectPathLocal, { workspaces }]]),
     };
     for (const id of ids) {
       await historyHandle.historyService.appendToHistory(
@@ -941,7 +935,7 @@ describe("AgentStatusService", () => {
       makeWorkspaceEntry({
         id: misconfiguredWorkspaceId,
         name: misconfiguredWorkspaceId,
-      } as Partial<Workspace>),
+      }),
       makeWorkspaceEntry(),
     ]);
     await historyHandle.historyService.appendToHistory(
@@ -1032,7 +1026,7 @@ describe("AgentStatusService", () => {
 
   test("archived workspaces are not regenerated", async () => {
     projectsConfig = makeProjectsConfig([
-      makeWorkspaceEntry({ archivedAt: new Date().toISOString() } as Partial<Workspace>),
+      makeWorkspaceEntry({ archivedAt: new Date().toISOString() }),
     ]);
     await historyHandle.historyService.appendToHistory(
       workspaceId,

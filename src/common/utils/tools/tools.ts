@@ -482,14 +482,14 @@ export async function getToolsForModel(
             ...baseTools,
             ...(mcpTools ?? {}),
             // Provider-specific tool types are compatible with Tool at runtime
-            web_search: anthropic.tools.webSearch_20250305({ maxUses: 1000 }) as Tool,
-            web_fetch: anthropic.tools.webFetch_20250910({ maxUses: 1000 }) as Tool,
+            web_search: anthropic.tools.webSearch_20250305({ maxUses: 1000 }),
+            web_fetch: anthropic.tools.webFetch_20250910({ maxUses: 1000 }),
           };
         } else {
           allTools = {
             ...baseTools,
             ...(mcpTools ?? {}),
-            web_search: anthropic.tools.webSearch_20250305({ maxUses: 1000 }) as Tool,
+            web_search: anthropic.tools.webSearch_20250305({ maxUses: 1000 }),
           };
         }
         break;
@@ -513,7 +513,7 @@ export async function getToolsForModel(
             // Provider-specific tool types are compatible with Tool at runtime
             web_search: openai.tools.webSearch({
               searchContextSize: "high",
-            }) as Tool,
+            }),
           };
         } else {
           // For other OpenAI models (o1, o3, etc.), still use sanitized MCP tools

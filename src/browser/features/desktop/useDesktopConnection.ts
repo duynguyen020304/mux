@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import type RFB from "@novnc/novnc/lib/rfb";
+import type RFB from "@novnc/novnc";
 import { useAPI } from "@/browser/contexts/API";
 import { getBrowserBackendBaseUrl } from "@/browser/utils/backendBaseUrl";
 import { DESKTOP_DEFAULTS } from "@/common/constants/desktop";
@@ -235,9 +235,8 @@ export function useDesktopConnection(workspaceId: string): UseDesktopConnectionR
         const container = containerRef.current;
         assertDesktop(container, "Desktop panel container is not mounted.");
 
-        // noVNC's CommonJS entry reaches a transitive dependency with top-level await,
-        // so Vite dev mode must load it lazily instead of pre-bundling a static import.
-        const { default: RFB } = await import("@novnc/novnc/lib/rfb");
+        // noVNC v1.7 exports its ESM RFB entry at the package root.
+        const { default: RFB } = await import("@novnc/novnc");
         // Guard against stale connection after async import
         if (isDisposedRef.current || generation !== generationRef.current) {
           return;

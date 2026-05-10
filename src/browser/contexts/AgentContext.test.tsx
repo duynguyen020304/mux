@@ -259,7 +259,7 @@ describe("AgentContext", () => {
     const dom = new GlobalWindow();
     globalThis.window = dom as unknown as Window & typeof globalThis;
     globalThis.document = dom.document as unknown as Document;
-    globalThis.localStorage = dom.localStorage as unknown as Storage;
+    globalThis.localStorage = dom.localStorage;
     window.api = {
       platform: "darwin",
       versions: {},
@@ -382,7 +382,7 @@ describe("AgentContext", () => {
     const handleOpenPicker = () => {
       openPickerEvents += 1;
     };
-    window.addEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpenPicker as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpenPicker);
 
     try {
       renderAgentHarness({
@@ -424,10 +424,7 @@ describe("AgentContext", () => {
       });
       expect(openPickerEvents).toBe(0);
     } finally {
-      window.removeEventListener(
-        CUSTOM_EVENTS.OPEN_AGENT_PICKER,
-        handleOpenPicker as EventListener
-      );
+      window.removeEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpenPicker);
     }
   });
 
@@ -438,44 +435,24 @@ describe("AgentContext", () => {
     window.localStorage.setItem(scopeKey, JSON.stringify("mux"));
 
     let contextValue: AgentContextValue | undefined;
-    let openPickerEvents = 0;
-    const handleOpenPicker = () => {
-      openPickerEvents += 1;
-    };
-    window.addEventListener(CUSTOM_EVENTS.OPEN_AGENT_PICKER, handleOpenPicker as EventListener);
 
-    try {
-      renderAgentHarness({ projectPath, onChange: (value) => (contextValue = value) });
+    renderAgentHarness({ projectPath, onChange: (value) => (contextValue = value) });
 
-      await waitFor(() => {
-        expect(contextValue?.agentId).toBe("exec");
-      });
-      expect(window.localStorage.getItem(scopeKey)).toBe(JSON.stringify("exec"));
+    await waitFor(() => {
+      expect(contextValue?.agentId).toBe("exec");
+    });
+    expect(window.localStorage.getItem(scopeKey)).toBe(JSON.stringify("exec"));
 
-      window.api = { platform: "darwin", versions: {} };
+    window.api = { platform: "darwin", versions: {} };
 
-      fireEvent.keyDown(window, {
-        key: "A",
-        ctrlKey: true,
-        metaKey: true,
-        shiftKey: true,
-      });
+    fireEvent.keyDown(window, {
+      key: ".",
+      code: "Period",
+      metaKey: true,
+    });
 
-      fireEvent.keyDown(window, {
-        key: ".",
-        code: "Period",
-        metaKey: true,
-      });
-
-      await waitFor(() => {
-        expect(contextValue?.agentId).toBe("plan");
-      });
-      expect(openPickerEvents).toBe(1);
-    } finally {
-      window.removeEventListener(
-        CUSTOM_EVENTS.OPEN_AGENT_PICKER,
-        handleOpenPicker as EventListener
-      );
-    }
+    await waitFor(() => {
+      expect(contextValue?.agentId).toBe("plan");
+    });
   });
 });

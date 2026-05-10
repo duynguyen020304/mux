@@ -28,7 +28,7 @@ function getProviderDefinition(provider: string): RoutingProviderDefinition | un
     return undefined;
   }
 
-  return PROVIDER_DEFINITIONS[provider as ProviderName] as RoutingProviderDefinition;
+  return PROVIDER_DEFINITIONS[provider as ProviderName];
 }
 
 function parseRoutingInput(modelInput: string): ParsedRoutingInput {

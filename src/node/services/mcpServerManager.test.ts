@@ -146,7 +146,7 @@ describe("MCPServerManager", () => {
         await access.startSingleServer(
           "stuck-server",
           { transport: "stdio", command: "never" },
-          {} as Runtime,
+          {},
           "/tmp/project",
           "/tmp/workspace",
           undefined,
@@ -207,7 +207,7 @@ describe("MCPServerManager", () => {
         .startSingleServer(
           "cleanup-server",
           { transport: "stdio", command: "never" },
-          {} as Runtime,
+          {},
           "/tmp/project",
           "/tmp/workspace",
           undefined,
@@ -273,7 +273,7 @@ describe("MCPServerManager", () => {
         await access.startSingleServer(
           "cleanup-hang-server",
           { transport: "stdio", command: "never" },
-          {} as Runtime,
+          {},
           "/tmp/project",
           "/tmp/workspace",
           undefined,
@@ -327,7 +327,7 @@ describe("MCPServerManager", () => {
           "slow-server": { transport: "stdio", command: "slow", disabled: false },
           "broken-server": { transport: "stdio", command: "broken", disabled: false },
         },
-        {} as Runtime,
+        {},
         "/tmp/project",
         "/tmp/workspace",
         undefined,
@@ -368,7 +368,7 @@ describe("MCPServerManager", () => {
     const result = await access.startSingleServerImpl(
       "stdio-aborted-after-exec",
       { transport: "stdio", command: "never" },
-      { exec } as unknown as Runtime,
+      { exec },
       "/tmp/project",
       "/tmp/workspace",
       undefined,
@@ -414,7 +414,7 @@ describe("MCPServerManager", () => {
       const startup = access.startSingleServerImpl(
         "stdio-late-client-cleanup",
         { transport: "stdio", command: "never" },
-        { exec } as unknown as Runtime,
+        { exec },
         "/tmp/project",
         "/tmp/workspace",
         undefined,
@@ -454,7 +454,7 @@ describe("MCPServerManager", () => {
       const startup = access.startSingleServerImpl(
         "http-late-client-cleanup",
         { transport: "http", url: "https://example.com/mcp" },
-        {} as Runtime,
+        {},
         "/tmp/project",
         "/tmp/workspace",
         undefined,

@@ -51,7 +51,7 @@ describe("WorkspaceTitleEditContext", () => {
     const testWindow = new GlobalWindow();
     globalThis.window = testWindow as unknown as Window & typeof globalThis;
     globalThis.document = testWindow.document as unknown as Document;
-    globalThis.localStorage = testWindow.localStorage as unknown as Storage;
+    globalThis.localStorage = testWindow.localStorage;
 
     let contextValue: ReturnType<typeof useTitleEdit> | null = null;
 
@@ -98,7 +98,7 @@ describe("WorkspaceTitleEditContext", () => {
     const testWindow = new GlobalWindow();
     globalThis.window = testWindow as unknown as Window & typeof globalThis;
     globalThis.document = testWindow.document as unknown as Document;
-    globalThis.localStorage = testWindow.localStorage as unknown as Storage;
+    globalThis.localStorage = testWindow.localStorage;
 
     let contextValue: ReturnType<typeof useTitleEdit> | null = null;
 
@@ -146,7 +146,7 @@ describe("WorkspaceTitleEditContext", () => {
     const testWindow = new GlobalWindow();
     globalThis.window = testWindow as unknown as Window & typeof globalThis;
     globalThis.document = testWindow.document as unknown as Document;
-    globalThis.localStorage = testWindow.localStorage as unknown as Storage;
+    globalThis.localStorage = testWindow.localStorage;
 
     const alertMock = mock();
     const alertHandler = (message?: unknown) => {

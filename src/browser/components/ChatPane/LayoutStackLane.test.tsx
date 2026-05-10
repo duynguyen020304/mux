@@ -113,7 +113,7 @@ describe("LayoutStackLane", () => {
     originalResizeObserver = globalThis.ResizeObserver;
     resizeCallbacks.clear();
     (globalThis as typeof globalThis & { ResizeObserver: typeof ResizeObserver }).ResizeObserver =
-      ResizeObserverMock as unknown as typeof ResizeObserver;
+      ResizeObserverMock;
   });
 
   afterEach(() => {

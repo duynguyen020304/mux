@@ -40,7 +40,7 @@ const mediaQueryList: MediaQueryList = {
     }
 
     if (typeof listener === "function") {
-      mediaQueryListeners.add(listener as (event: MediaQueryListEvent) => void);
+      mediaQueryListeners.add(listener);
     }
   },
   removeEventListener: (
@@ -53,7 +53,7 @@ const mediaQueryList: MediaQueryList = {
     }
 
     if (typeof listener === "function") {
-      mediaQueryListeners.delete(listener as (event: MediaQueryListEvent) => void);
+      mediaQueryListeners.delete(listener);
     }
   },
   dispatchEvent: (_event: Event) => true,

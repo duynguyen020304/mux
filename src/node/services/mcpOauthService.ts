@@ -988,7 +988,7 @@ export class McpOauthService {
       saveTokens: async (tokens) => {
         await this.saveTokens({
           serverUrl: flow.serverUrlForStoreKey,
-          tokens: tokens as unknown as MCPOAuthTokens,
+          tokens: tokens,
         });
       },
       redirectToAuthorization: (authorizationUrl) => {
@@ -1031,7 +1031,7 @@ export class McpOauthService {
         return Promise.resolve(flow.clientInformation ?? undefined);
       },
       saveClientInformation: async (clientInformation) => {
-        const next = clientInformation as unknown as MCPOAuthClientInformation;
+        const next = clientInformation;
         flow.clientInformation = next;
 
         await this.saveClientInformation({
@@ -1050,12 +1050,12 @@ export class McpOauthService {
     return {
       tokens: async () => {
         const creds = await this.getValidStoredCredentials({ serverUrl: input.serverUrl });
-        return creds?.tokens as unknown as MCPOAuthTokens | undefined;
+        return creds?.tokens;
       },
       saveTokens: async (tokens) => {
         await this.saveTokens({
           serverUrl: input.serverUrl,
-          tokens: tokens as unknown as MCPOAuthTokens,
+          tokens: tokens,
         });
       },
       redirectToAuthorization: async () => {
@@ -1090,12 +1090,12 @@ export class McpOauthService {
       },
       clientInformation: async () => {
         const creds = await this.getValidStoredCredentials({ serverUrl: input.serverUrl });
-        return creds?.clientInformation as unknown as MCPOAuthClientInformation | undefined;
+        return creds?.clientInformation;
       },
       saveClientInformation: async (clientInformation) => {
         await this.saveClientInformation({
           serverUrl: input.serverUrl,
-          clientInformation: clientInformation as unknown as MCPOAuthClientInformation,
+          clientInformation: clientInformation,
         });
       },
     };

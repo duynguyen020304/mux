@@ -27,12 +27,9 @@ export function MuxGatewaySessionExpiredDialog() {
       setIsOpen(true);
     };
 
-    window.addEventListener(CUSTOM_EVENTS.MUX_GATEWAY_SESSION_EXPIRED, handler as EventListener);
+    window.addEventListener(CUSTOM_EVENTS.MUX_GATEWAY_SESSION_EXPIRED, handler);
     return () => {
-      window.removeEventListener(
-        CUSTOM_EVENTS.MUX_GATEWAY_SESSION_EXPIRED,
-        handler as EventListener
-      );
+      window.removeEventListener(CUSTOM_EVENTS.MUX_GATEWAY_SESSION_EXPIRED, handler);
     };
   }, []);
 

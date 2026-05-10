@@ -20,7 +20,7 @@ function getFetchInputUrl(input: RequestInfo | URL): string {
 function createTestFetch(
   handler: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 ): typeof fetch {
-  return Object.assign(handler, { preconnect: fetch.preconnect.bind(fetch) }) as typeof fetch;
+  return Object.assign(handler, { preconnect: fetch.preconnect.bind(fetch) });
 }
 
 function createTestWebSocketFetch(

@@ -44,7 +44,7 @@ describe("AgentSession.sendMessage (editMessageId)", () => {
     const aiService = Object.assign(new EventEmitter(), {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as AIService["streamMessage"],
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     return {

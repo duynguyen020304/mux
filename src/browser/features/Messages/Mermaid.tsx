@@ -128,7 +128,8 @@ export function sanitizeMermaidSvg(svg: string): string | null {
 
       if (
         urlAttributes.has(attributeName) &&
-        blockedSchemes.some((scheme) => canonicalUrlValue.startsWith(scheme))
+        (attribute.value.includes("\uFFFD") ||
+          blockedSchemes.some((scheme) => canonicalUrlValue.startsWith(scheme)))
       ) {
         element.removeAttribute(attribute.name);
       }

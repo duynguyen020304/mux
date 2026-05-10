@@ -342,7 +342,7 @@ function resolvePresetTab(
     return sessionId ? (`terminal:${sessionId}` as const) : null;
   }
 
-  return tab as TabType;
+  return tab;
 }
 
 function resolvePresetNodeToLayout(

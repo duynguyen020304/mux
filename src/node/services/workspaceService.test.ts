@@ -182,7 +182,7 @@ describe("WorkspaceService initialize", () => {
 
     config.getAllWorkspaceMetadata = mock(() =>
       Promise.resolve([liveWorkspace, taskWorkspace, archivedWorkspace])
-    ) as unknown as Config["getAllWorkspaceMetadata"];
+    );
 
     const startupAccess = workspaceService as unknown as {
       startStartupRecovery: (workspaceId: string) => void;
@@ -198,9 +198,7 @@ describe("WorkspaceService initialize", () => {
   });
 
   test("swallows startup metadata lookup failures", async () => {
-    config.getAllWorkspaceMetadata = mock(() =>
-      Promise.reject(new Error("config unavailable"))
-    ) as unknown as Config["getAllWorkspaceMetadata"];
+    config.getAllWorkspaceMetadata = mock(() => Promise.reject(new Error("config unavailable")));
 
     const startupAccess = workspaceService as unknown as {
       startStartupRecovery: (workspaceId: string) => void;
@@ -1500,7 +1498,7 @@ describe("WorkspaceService idle compaction dispatch", () => {
         ],
       ]),
       agentAiDefaults: {
-        compact: { thinkingLevel: "high" as ThinkingLevel },
+        compact: { thinkingLevel: "high" },
       },
     }));
 
@@ -3786,8 +3784,7 @@ describe("WorkspaceService archive lifecycle hooks", () => {
     (mockAIService.isStreaming as ReturnType<typeof mock>).mockReturnValue(true);
 
     const interruptStreamSpy = mock(() => Promise.resolve(Ok(undefined)));
-    workspaceService.interruptStream =
-      interruptStreamSpy as unknown as typeof workspaceService.interruptStream;
+    workspaceService.interruptStream = interruptStreamSpy;
 
     const result = await workspaceService.archive(workspaceId);
 
@@ -5437,7 +5434,7 @@ describe("WorkspaceService init cancellation", () => {
     );
 
     // Make it obvious if archive() incorrectly chooses deletion.
-    workspaceService.remove = removeMock as unknown as typeof workspaceService.remove;
+    workspaceService.remove = removeMock;
 
     const result = await workspaceService.archive(workspaceId);
     expect(result.success).toBe(true);
@@ -5495,7 +5492,7 @@ describe("WorkspaceService init cancellation", () => {
     );
 
     // Make it obvious if archive() incorrectly chooses deletion.
-    workspaceService.remove = removeMock as unknown as typeof workspaceService.remove;
+    workspaceService.remove = removeMock;
 
     const result = await workspaceService.archive(workspaceId);
     expect(result.success).toBe(true);

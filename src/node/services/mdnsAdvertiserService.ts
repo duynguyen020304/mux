@@ -149,10 +149,7 @@ function stableServiceKey(options: ServiceOptions): string {
   const restricted = options.restrictedAddresses
     ? [...options.restrictedAddresses].sort().join(",")
     : "";
-  const txt =
-    options.txt && typeof options.txt === "object"
-      ? stableTxtKey(options.txt as ServiceTxtRecord)
-      : "";
+  const txt = options.txt && typeof options.txt === "object" ? stableTxtKey(options.txt) : "";
   return [
     options.name,
     options.type,

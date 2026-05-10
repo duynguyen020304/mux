@@ -93,7 +93,7 @@ export function createOpenAIWebSocketTransportFetch(
   };
 
   const baseFetchWithPreconnect = options.baseFetch as typeof fetch & {
-    preconnect?: typeof fetch.preconnect;
+    preconnect?: (input: string | URL, init?: RequestInit) => void;
   };
   const fetchExtras =
     typeof baseFetchWithPreconnect.preconnect === "function"

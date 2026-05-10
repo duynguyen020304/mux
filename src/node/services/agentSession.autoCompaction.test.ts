@@ -162,9 +162,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -236,9 +234,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -329,9 +325,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -422,9 +416,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -496,9 +488,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -575,9 +565,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream: mock((_workspaceId: string) => Promise.resolve(Ok(undefined))),
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -923,9 +911,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream,
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;
@@ -975,14 +961,14 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
 
     const originalSendMessage = session.sendMessage.bind(session);
     let sendCallCount = 0;
-    internals.sendMessage = (async (...args: Parameters<AgentSession["sendMessage"]>) => {
+    internals.sendMessage = async (...args: Parameters<AgentSession["sendMessage"]>) => {
       sendCallCount += 1;
       if (sendCallCount === 1) {
         return originalSendMessage(...args);
       }
 
       return Err({ type: "unknown", raw: "mid-stream compaction dispatch failed" });
-    }) as AgentSession["sendMessage"];
+    };
 
     const events: WorkspaceChatMessage[] = [];
     session.onChatEvent(({ message }) => {
@@ -1071,9 +1057,7 @@ describe("AgentSession on-send auto-compaction snapshot deferral", () => {
     const aiService = Object.assign(aiEmitter, {
       isStreaming: mock((_workspaceId: string) => false),
       stopStream,
-      streamMessage: streamMessage as unknown as (
-        ...args: Parameters<AIService["streamMessage"]>
-      ) => Promise<unknown>,
+      streamMessage: streamMessage,
     }) as unknown as AIService;
 
     const initStateManager = new EventEmitter() as unknown as InitStateManager;

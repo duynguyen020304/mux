@@ -465,7 +465,7 @@ export function getCompactionFollowUpContent(
   metadata?: MuxMessageMetadata
 ): CompactionRequestData["followUpContent"] | undefined {
   // Keep follow-up extraction centralized so callers don't duplicate legacy handling.
-  if (!metadata || metadata.type !== "compaction-request") {
+  if (metadata?.type !== "compaction-request") {
     return undefined;
   }
 

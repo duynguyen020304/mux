@@ -24,8 +24,8 @@ import { ShareTranscriptDialog } from "../ShareTranscriptDialog/ShareTranscriptD
 
 const TEST_WORKSPACE_ID = "ws-1";
 
-function getStore(): WorkspaceStore {
-  return (useWorkspaceStoreRaw as unknown as () => WorkspaceStore)();
+function useStoreForTest(): WorkspaceStore {
+  return useWorkspaceStoreRaw();
 }
 
 function createApiClient(): APIClient {
@@ -76,7 +76,7 @@ describe("ShareTranscriptDialog", () => {
     // Ensure test isolation from other suites that attach a mock ORPC client.
     // Share dialog tests operate on local ephemeral messages and should not race
     // onChat reconnect loops from unrelated WorkspaceStore tests.
-    getStore().setClient(null);
+    useStoreForTest().setClient(null);
 
     spyOn(console, "error").mockImplementation(() => undefined);
 
@@ -88,7 +88,7 @@ describe("ShareTranscriptDialog", () => {
       expiresAt: Date.now() + 60_000,
     });
     spyOn(muxMd, "deleteFromMuxMd").mockResolvedValue(undefined);
-    getStore().addWorkspace({
+    useStoreForTest().addWorkspace({
       id: TEST_WORKSPACE_ID,
       name: "workspace-1",
       title: "Workspace 1",
@@ -106,7 +106,7 @@ describe("ShareTranscriptDialog", () => {
   });
 
   afterEach(() => {
-    getStore().removeWorkspace(TEST_WORKSPACE_ID);
+    useStoreForTest().removeWorkspace(TEST_WORKSPACE_ID);
     cleanup();
     mock.restore();
     globalThis.getComputedStyle = originalGetComputedStyle;

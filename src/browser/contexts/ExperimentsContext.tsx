@@ -194,7 +194,7 @@ export function ExperimentsProvider(props: { children: React.ReactNode }) {
 
     try {
       const result = await apiState.api.experiments.getAll();
-      setRemoteExperiments(result as Partial<Record<ExperimentId, ExperimentValue>>);
+      setRemoteExperiments(result);
     } catch {
       setRemoteExperiments(null);
     }

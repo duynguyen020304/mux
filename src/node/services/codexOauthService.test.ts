@@ -114,7 +114,7 @@ function mockFetch(fn: (input: RequestInfo | URL, init?: RequestInit) => Promise
     preconnect: (_url: string | URL) => {
       // no-op in tests
     },
-  }) as typeof fetch;
+  });
 }
 
 // ---------------------------------------------------------------------------

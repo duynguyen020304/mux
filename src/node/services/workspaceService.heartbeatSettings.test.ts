@@ -37,7 +37,7 @@ function createWorkspace(heartbeat: {
     path: TEST_WORKSPACE_PATH,
     name: "test",
     heartbeat,
-  } as unknown as Workspace;
+  };
 }
 
 describe("WorkspaceService heartbeat settings", () => {

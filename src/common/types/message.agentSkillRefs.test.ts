@@ -79,7 +79,7 @@ describe("agent skill refs metadata helpers", () => {
 
     const result = withAgentSkillRefs(metadata, [skillRef("react-effects", "inline", "built-in")]);
 
-    if (!result || result.type !== "agent-skill") {
+    if (result?.type !== "agent-skill") {
       throw new Error("Expected agent-skill metadata");
     }
     expect(result.type).toBe("agent-skill");

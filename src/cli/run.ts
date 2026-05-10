@@ -66,7 +66,7 @@ import type { RuntimeConfig } from "../common/types/runtime";
 import { parseRuntimeModeAndHost, RUNTIME_MODE } from "../common/types/runtime";
 import assert from "../common/utils/assert";
 import type { LanguageModelV2Usage } from "@ai-sdk/provider";
-import { log, type LogLevel } from "../node/services/log";
+import { log } from "../node/services/log";
 import chalk from "chalk";
 import type { InitLogger, WorkspaceInitResult } from "../node/runtime/Runtime";
 import { DockerRuntime } from "../node/runtime/DockerRuntime";
@@ -313,7 +313,7 @@ async function main(): Promise<number> {
   if (opts.logLevel) {
     const level = opts.logLevel.toLowerCase();
     if (level === "error" || level === "warn" || level === "info" || level === "debug") {
-      log.setLevel(level as LogLevel);
+      log.setLevel(level);
     } else {
       console.error(`Invalid log level "${opts.logLevel}". Expected: error, warn, info, debug`);
       process.exit(1);

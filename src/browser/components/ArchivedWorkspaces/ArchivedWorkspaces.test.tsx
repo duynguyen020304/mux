@@ -95,15 +95,11 @@ describe("ArchivedWorkspaces", () => {
     spyOn(TooltipModule, "TooltipContent").mockImplementation(((props: { children: ReactNode }) => (
       <>{props.children}</>
     )) as unknown as typeof TooltipModule.TooltipContent);
-    spyOn(ForceDeleteModalModule, "ForceDeleteModal").mockImplementation(
-      (() => null) as unknown as typeof ForceDeleteModalModule.ForceDeleteModal
-    );
-    spyOn(RuntimeBadgeModule, "RuntimeBadge").mockImplementation((() => (
+    spyOn(ForceDeleteModalModule, "ForceDeleteModal").mockImplementation(() => null);
+    spyOn(RuntimeBadgeModule, "RuntimeBadge").mockImplementation(() => (
       <span data-testid="runtime-badge" />
-    )) as unknown as typeof RuntimeBadgeModule.RuntimeBadge);
-    spyOn(SkeletonModule, "Skeleton").mockImplementation((() => (
-      <div data-testid="skeleton" />
-    )) as unknown as typeof SkeletonModule.Skeleton);
+    ));
+    spyOn(SkeletonModule, "Skeleton").mockImplementation(() => <div data-testid="skeleton" />);
     spyOn(OptimisticBatchLRUModule, "useOptimisticBatchLRU").mockImplementation((() => ({
       values: {},
       status: "success",

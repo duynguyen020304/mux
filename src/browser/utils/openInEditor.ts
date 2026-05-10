@@ -4,7 +4,6 @@ import {
   getDockerDeepLink,
   getDevcontainerDeepLink,
   isLocalhost,
-  type DeepLinkEditor,
 } from "@/browser/utils/editorDeepLinks";
 import {
   DEFAULT_EDITOR_CONFIG,
@@ -138,7 +137,7 @@ export async function openInEditor(args: {
     // not individual files. Open the parent directory so the file is visible in the file tree.
     const targetDir = args.isFile ? getParentDirectory(args.targetPath) : args.targetPath;
     const deepLink = getDockerDeepLink({
-      editor: editorConfig.editor as DeepLinkEditor,
+      editor: editorConfig.editor,
       containerName,
       path: targetDir,
     });
@@ -190,7 +189,7 @@ export async function openInEditor(args: {
       : undefined;
 
     const deepLink = getDevcontainerDeepLink({
-      editor: editorConfig.editor as DeepLinkEditor,
+      editor: editorConfig.editor,
       containerName: info.containerName,
       hostPath: hostWorkspacePath,
       containerPath,
@@ -224,7 +223,7 @@ export async function openInEditor(args: {
 
     // VS Code/Cursor SSH deep links treat the path as a folder unless a line/column is present.
     const deepLink = getEditorDeepLink({
-      editor: editorConfig.editor as DeepLinkEditor,
+      editor: editorConfig.editor,
       path: args.targetPath,
       sshHost,
       line: args.isFile && sshHost ? 1 : undefined,

@@ -23,9 +23,9 @@ describe("persistWorkspaceCreationPrefill", () => {
 
   function createPersistSpy() {
     const calls: PersistCall[] = [];
-    const persist: PersistFn = ((...args: PersistCall) => {
+    const persist: PersistFn = (...args: PersistCall) => {
       calls.push(args);
-    }) as PersistFn;
+    };
 
     return { persist, calls };
   }

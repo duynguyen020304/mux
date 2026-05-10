@@ -167,8 +167,7 @@ function collectCodeRanges(text: string): TextRange[] {
       while (index < text.length) {
         const closingFenceMarker = getFenceMarkerAtLineStart(text, index);
         if (
-          closingFenceMarker &&
-          closingFenceMarker.char === fenceMarker.char &&
+          closingFenceMarker?.char === fenceMarker.char &&
           closingFenceMarker.length >= fenceMarker.length &&
           hasOnlySpacesOrTabsUntilLineEnd(
             text,

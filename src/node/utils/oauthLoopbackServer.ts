@@ -255,10 +255,10 @@ export async function startLoopbackServer(options: LoopbackServerOptions): Promi
   // Ensure pending deferred browser responses are completed before server close,
   // even when callers close via the raw `server` handle (e.g. OAuthFlowManager).
   const originalClose = server.close.bind(server);
-  server.close = ((callback?: (err?: Error) => void) => {
+  server.close = (callback?: (err?: Error) => void) => {
     sendCancelledResponseIfPending();
     return originalClose(callback);
-  }) as typeof server.close;
+  };
 
   // Listen on the specified host/port — mirrors the existing
   // `server.listen(port, host, () => resolve())` pattern.

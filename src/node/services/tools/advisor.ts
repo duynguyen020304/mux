@@ -210,7 +210,7 @@ export function createAdvisorTool(config: ToolConfiguration): Tool {
               toolName: "advisor",
               model: advisorModelString,
               usage: result.usage,
-              providerMetadata: result.providerMetadata as Record<string, unknown> | undefined,
+              providerMetadata: result.providerMetadata,
               toolCallId,
               timestamp: Date.now(),
             });

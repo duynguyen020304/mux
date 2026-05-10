@@ -197,7 +197,7 @@ describe("GitStatusStore", () => {
         exitCode: 0,
         wall_duration_ms: 0,
       },
-    } as Result<BashToolResult, string>);
+    });
     mockGetProjectGitStatuses.mockResolvedValue([]);
 
     (globalThis as unknown as { window: unknown }).window = {
@@ -207,7 +207,7 @@ describe("GitStatusStore", () => {
           getProjectGitStatuses: mockGetProjectGitStatuses,
         },
       },
-    } as unknown as Window & typeof globalThis;
+    };
 
     store = createStore();
   });
@@ -1215,7 +1215,7 @@ describe("GitStatusStore", () => {
           exitCode: 0,
           wall_duration_ms: 0,
         },
-      } as Result<BashToolResult, string>);
+      });
 
       store.syncWorkspaces(
         new Map([[workspaceId, createWorkspaceMetadata(workspaceId, DEVCONTAINER_RUNTIME)]])

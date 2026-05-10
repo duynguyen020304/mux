@@ -165,7 +165,7 @@ export const FileEditToolCall: React.FC<FileEditToolCallProps> = ({
   const [showFullDiff, setShowFullDiff] = React.useState(false);
 
   const uiOnlyDiff = getToolOutputUiOnly(result)?.file_edit?.diff;
-  const diff = result && result.success ? (uiOnlyDiff ?? result.diff) : undefined;
+  const diff = result?.success ? (uiOnlyDiff ?? result.diff) : undefined;
   const filePath = extractToolFilePath(args);
   const largeDiffPreview = diff ? buildLargeDiffPreview(diff) : null;
   const shouldShowLargeDiffPreview = Boolean(largeDiffPreview && !showRaw && !showFullDiff);

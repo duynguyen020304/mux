@@ -931,7 +931,7 @@ describe("ProviderModelFactory OpenAI WebSocket transport", () => {
           apiKey: "sk-test",
           webSocketTransportEnabled: "true",
         },
-      } as unknown as Parameters<Config["saveProvidersConfig"]>[0]);
+      });
 
       const result = await factory.createModel("openai:gpt-4.1-mini");
 
@@ -1603,7 +1603,7 @@ function createCapturingFetch(): { calls: CapturedFetchCall[]; fakeFetch: typeof
     return Promise.resolve(new Response("{}", { status: 200 }));
   };
   // Preserve Bun's fetch extensions (preconnect, certificate) expected by `typeof fetch`.
-  const fakeFetch = Object.assign(fakeFetchImpl, fetch) as typeof fetch;
+  const fakeFetch = Object.assign(fakeFetchImpl, fetch);
   return { calls, fakeFetch };
 }
 

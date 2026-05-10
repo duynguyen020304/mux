@@ -57,7 +57,7 @@ export function matchesKeybind(
   if (expectedCode) {
     // Prefer KeyboardEvent.code when provided so shifted punctuation shortcuts
     // remain stable even when event.key changes by layout (e.g. Shift+. => ">" on US).
-    if (!event.code || event.code.toLowerCase() !== expectedCode.toLowerCase()) {
+    if (event.code?.toLowerCase() !== expectedCode.toLowerCase()) {
       return false;
     }
   } else {

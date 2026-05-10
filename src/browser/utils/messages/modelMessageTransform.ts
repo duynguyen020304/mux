@@ -120,7 +120,7 @@ export function addInterruptedSentinel(messages: MuxMessage[]): MuxMessage[] {
 
       // Only add sentinel if there's NO user message following
       // If user message follows, it provides the continuation context itself
-      if (!nextMsg || nextMsg.role !== "user") {
+      if (nextMsg?.role !== "user") {
         result.push({
           id: `interrupted-${msg.id}`,
           role: "user",
