@@ -29,7 +29,7 @@ function taskToForm(task: KanbanTask): TaskFormData {
   return {
     title: task.title,
     description: task.description ?? "",
-    priority: task.priority ?? "",
+    priority: task.priority ?? "none",
     labels: task.labels?.join(", ") ?? "",
     assignee: task.assignee ?? "",
   };
@@ -38,7 +38,7 @@ function taskToForm(task: KanbanTask): TaskFormData {
 const EMPTY_FORM: TaskFormData = {
   title: "",
   description: "",
-  priority: "",
+  priority: "none",
   labels: "",
   assignee: "",
 };
@@ -82,7 +82,9 @@ export function TaskDetailModal(props: TaskDetailModalProps) {
         taskId: task.id,
         title: trimmed,
         description: form.description.trim() || undefined,
-        priority: (form.priority || undefined) as KanbanTaskPriority | undefined,
+        priority: (form.priority === "none" ? undefined : form.priority) as
+          | KanbanTaskPriority
+          | undefined,
         labels: form.labels.trim()
           ? form.labels
               .split(",")

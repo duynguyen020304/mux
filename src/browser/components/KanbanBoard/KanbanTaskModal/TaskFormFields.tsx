@@ -8,7 +8,7 @@ import type { KanbanTaskPriority } from "@/common/types/kanban";
 export interface TaskFormData {
   title: string;
   description: string;
-  priority: KanbanTaskPriority | "";
+  priority: KanbanTaskPriority | "none";
   labels: string;
   assignee: string;
 }
@@ -20,7 +20,7 @@ interface TaskFormFieldsProps {
 }
 
 const PRIORITY_OPTIONS: { value: string; label: string }[] = [
-  { value: "", label: "No priority" },
+  { value: "none", label: "No priority" },
   { value: "low", label: "Low" },
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" },
@@ -79,7 +79,7 @@ export function TaskFormFields(props: TaskFormFieldsProps) {
         <Select
           value={data.priority}
           options={PRIORITY_OPTIONS}
-          onChange={(val) => update("priority", val as KanbanTaskPriority | "")}
+          onChange={(val) => update("priority", val as KanbanTaskPriority | "none")}
           disabled={disabled}
           aria-label="Priority"
         />

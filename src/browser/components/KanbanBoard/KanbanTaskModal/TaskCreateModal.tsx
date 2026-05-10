@@ -27,7 +27,7 @@ interface TaskCreateModalProps {
 const EMPTY_FORM: TaskFormData = {
   title: "",
   description: "",
-  priority: "",
+  priority: "none",
   labels: "",
   assignee: "",
 };
@@ -68,7 +68,9 @@ export function TaskCreateModal(props: TaskCreateModalProps) {
         projectPath,
         title: trimmed,
         description: form.description.trim() || undefined,
-        priority: (form.priority || undefined) as KanbanTaskPriority | undefined,
+        priority: (form.priority === "none" ? undefined : form.priority) as
+          | KanbanTaskPriority
+          | undefined,
         labels: form.labels.trim()
           ? form.labels
               .split(",")

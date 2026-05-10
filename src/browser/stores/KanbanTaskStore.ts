@@ -25,7 +25,14 @@ export class KanbanTaskStore {
 
   getBoardState(workspaceId: string): KanbanBoardData {
     if (!this.boardStates.has(workspaceId)) {
-      return createEmptyBoard(workspaceId);
+      // Cache the empty board so useSyncExternalStore sees a stable reference
+      // (createEmptyBoard returns a new object every call → infinite re-render loop)
+      let board = this.boardCache.get(workspaceId);
+      if (!board) {
+        board = createEmptyBoard(workspaceId);
+        this.boardCache.set(workspaceId, board);
+      }
+      return board;
     }
     return this.boardStates.get(workspaceId, () => {
       return this.boardCache.get(workspaceId) ?? createEmptyBoard(workspaceId);
