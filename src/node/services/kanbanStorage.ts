@@ -14,6 +14,7 @@ import type { KanbanBoardData } from "@/common/types/kanban";
 import { KANBAN_DATA_DIR, KANBAN_DATA_VERSION } from "@/common/constants/kanban";
 import { createEmptyBoard } from "@/common/utils/kanban";
 import { ensurePrivateDir } from "@/node/utils/fs";
+import { log } from "./log";
 
 /** Get the kanban data directory under mux home. */
 export function getKanbanDir(muxHome: string): string {
@@ -59,7 +60,7 @@ export async function readBoard(muxHome: string, workspaceId: string): Promise<K
       (error as { code?: string }).code !== "ENOENT"
     ) {
       // Log unexpected errors but don't crash
-      console.warn(`[kanbanStorage] Error reading board for ${workspaceId}:`, error);
+      log.warn(`[kanbanStorage] Error reading board for ${workspaceId}:`, error);
     }
   }
 

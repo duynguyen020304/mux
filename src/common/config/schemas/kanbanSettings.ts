@@ -1,16 +1,11 @@
 import { z } from "zod";
 
+import { KanbanColumnSchema } from "@/common/orpc/schemas/kanban";
+export { KanbanColumnSchema };
+
 export const KANBAN_SETTINGS_LIMITS = {
   maxParallelKanbanTasks: { min: 1, max: 50, default: 5 },
 } as const;
-
-export const KanbanColumnSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  status: z.enum(["backlog", "in_progress", "in_review", "done", "archived"]),
-  wipLimit: z.number().int().min(1).optional(),
-  collapsed: z.boolean().optional(),
-});
 
 export const KanbanSettingsSchema = z.object({
   maxParallelKanbanTasks: z

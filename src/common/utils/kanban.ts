@@ -65,3 +65,12 @@ export function countActiveTasks(
     (t) => t.status !== "archived" && (status == null || t.status === status)
   ).length;
 }
+
+/** Human-readable labels for kanban task statuses. */
+export const KANBAN_STATUS_LABELS: Record<KanbanTaskStatus, string> = {
+  backlog: "Backlog",
+  in_progress: "In Progress",
+  in_review: "In Review",
+  done: "Done",
+  archived: "Archived",
+};

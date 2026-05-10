@@ -1,9 +1,10 @@
 /**
  * TaskDetailModal — dialog for viewing/editing an existing Kanban task.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import type { KanbanTask, KanbanTaskPriority } from "@/common/types/kanban";
+import { KANBAN_STATUS_LABELS } from "@/common/utils/kanban";
 import { useAPI } from "@/browser/contexts/API";
 import {
   Dialog,
@@ -34,18 +35,24 @@ function taskToForm(task: KanbanTask): TaskFormData {
   };
 }
 
+const EMPTY_FORM: TaskFormData = {
+  title: "",
+  description: "",
+  priority: "",
+  labels: "",
+  assignee: "",
+};
+
 export function TaskDetailModal(props: TaskDetailModalProps) {
   const { task, isOpen, onClose, onUpdated, onDelete } = props;
   const { api } = useAPI();
 
-  const [form, setForm] = useState<TaskFormData>(taskToForm(task ?? ({} as KanbanTask)));
+  // key prop on the form wrapper remounts form fields when task changes,
+  // replacing the old useEffect-based reset pattern.
+  const formKey = task?.id ?? "empty";
+  const [form, setForm] = useState<TaskFormData>(task ? taskToForm(task) : EMPTY_FORM);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
-
-  // Reset form when task changes
-  useEffect(() => {
-    if (task) setForm(taskToForm(task));
-  }, [task]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -139,11 +146,12 @@ export function TaskDetailModal(props: TaskDetailModalProps) {
         <DialogHeader>
           <DialogTitle>Edit Task</DialogTitle>
           <DialogDescription>
-            Created {new Date(task.createdAt).toLocaleDateString()} · {task.status}
+            Created {new Date(task.createdAt).toLocaleDateString()} ·{" "}
+            {KANBAN_STATUS_LABELS[task.status]}
           </DialogDescription>
         </DialogHeader>
 
-        <div onKeyDown={handleKeyDown}>
+        <div key={formKey} onKeyDown={handleKeyDown}>
           <TaskFormFields data={form} onChange={setForm} disabled={isSaving} />
 
           {error && <p className="text-error mt-2 text-xs">{error}</p>}

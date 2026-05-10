@@ -16,6 +16,7 @@ import {
   readPersistedState,
 } from "./hooks/usePersistedState";
 import { useResizableSidebar } from "./hooks/useResizableSidebar";
+import { getKanbanViewModeKey } from "@/common/constants/storage";
 import { matchesKeybind, KEYBINDS } from "./utils/ui/keybinds";
 import { handleLayoutSlotHotkeys } from "./utils/ui/layoutSlotHotkeys";
 import { buildSortedWorkspacesByProject } from "./utils/ui/workspaceFiltering";
@@ -812,6 +813,14 @@ function AppInner() {
       } else if (matchesKeybind(e, KEYBINDS.TOGGLE_SIDEBAR)) {
         e.preventDefault();
         setSidebarCollapsed((prev) => !prev);
+      } else if (matchesKeybind(e, KEYBINDS.TOGGLE_KANBAN)) {
+        e.preventDefault();
+        const wsId = selectedWorkspace?.workspaceId;
+        if (wsId) {
+          const key = getKanbanViewModeKey(wsId);
+          const current = readPersistedState<"chat" | "kanban">(key, "chat");
+          updatePersistedState(key, current === "kanban" ? "chat" : "kanban");
+        }
       } else if (matchesKeybind(e, KEYBINDS.OPEN_SETTINGS)) {
         e.preventDefault();
         openSettings();

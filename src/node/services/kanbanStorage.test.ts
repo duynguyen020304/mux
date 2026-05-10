@@ -8,7 +8,6 @@ import * as fs from "fs/promises";
 import * as os from "os";
 import * as path from "path";
 
-import type { KanbanBoardData } from "@/common/types/kanban";
 import { createEmptyBoard } from "@/common/utils/kanban";
 import { coerceBoardData, readBoard, writeBoard, getKanbanBoardPath } from "./kanbanStorage";
 

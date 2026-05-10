@@ -75,8 +75,12 @@ export function KanbanBoard(props: KanbanBoardProps) {
   const moveTask = useCallback(
     async (taskId: string, toStatus: KanbanTask["status"]) => {
       if (!api) return;
-      const result = await api.kanban.moveTask({ workspaceId, taskId, toStatus });
-      if (result.success) refresh();
+      try {
+        const result = await api.kanban.moveTask({ workspaceId, taskId, toStatus });
+        if (result.success) refresh();
+      } catch (err) {
+        console.error("[KanbanBoard] moveTask failed:", err);
+      }
     },
     [api, workspaceId, refresh]
   );
@@ -84,8 +88,12 @@ export function KanbanBoard(props: KanbanBoardProps) {
   const reorderTasks = useCallback(
     async (columnId: string, taskIds: string[]) => {
       if (!api) return;
-      const result = await api.kanban.reorderTasks({ workspaceId, columnId, taskIds });
-      if (result.success) refresh();
+      try {
+        const result = await api.kanban.reorderTasks({ workspaceId, columnId, taskIds });
+        if (result.success) refresh();
+      } catch (err) {
+        console.error("[KanbanBoard] reorderTasks failed:", err);
+      }
     },
     [api, workspaceId, refresh]
   );
@@ -93,8 +101,12 @@ export function KanbanBoard(props: KanbanBoardProps) {
   const deleteTask = useCallback(
     async (taskId: string) => {
       if (!api) return;
-      const result = await api.kanban.deleteTask({ workspaceId, taskId });
-      if (result.success) refresh();
+      try {
+        const result = await api.kanban.deleteTask({ workspaceId, taskId });
+        if (result.success) refresh();
+      } catch (err) {
+        console.error("[KanbanBoard] deleteTask failed:", err);
+      }
     },
     [api, workspaceId, refresh]
   );
@@ -102,8 +114,12 @@ export function KanbanBoard(props: KanbanBoardProps) {
   const archiveTask = useCallback(
     async (taskId: string, archive: boolean) => {
       if (!api) return;
-      const result = await api.kanban.archiveTask({ workspaceId, taskId, archive });
-      if (result.success) refresh();
+      try {
+        const result = await api.kanban.archiveTask({ workspaceId, taskId, archive });
+        if (result.success) refresh();
+      } catch (err) {
+        console.error("[KanbanBoard] archiveTask failed:", err);
+      }
     },
     [api, workspaceId, refresh]
   );

@@ -5,7 +5,7 @@
  * This component replaces ChatPane in the WorkspaceShell flex layout
  * when the user toggles to kanban view mode.
  */
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useAPI } from "@/browser/contexts/API";
 import { getKanbanTaskStore, useKanbanBoard } from "@/browser/stores/KanbanTaskStore";
@@ -21,14 +21,17 @@ export function KanbanView(props: KanbanViewProps) {
   const { api } = useAPI();
   const board = useKanbanBoard(workspaceId);
   const store = getKanbanTaskStore();
+  const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     if (!api) return;
     try {
       const data = await api.kanban.getBoard({ workspaceId });
       store.setBoardState(workspaceId, data);
-    } catch {
-      // Keep existing board state
+    } catch (e) {
+      console.error("[KanbanView] failed to load board:", e);
+    } finally {
+      setLoading(false);
     }
   }, [api, workspaceId, store]);
 
@@ -36,6 +39,14 @@ export function KanbanView(props: KanbanViewProps) {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center text-muted-foreground">
+        Loading board...
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full flex-col">

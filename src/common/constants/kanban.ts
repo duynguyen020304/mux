@@ -15,13 +15,6 @@ export const DEFAULT_KANBAN_COLUMNS: KanbanColumn[] = [
 /** Statuses that are hidden by default (toggle to show). */
 export const HIDDEN_KANBAN_STATUSES: ReadonlySet<KanbanTaskStatus> = new Set(["archived"]);
 
-/** LocalStorage key helpers for kanban UI preferences. */
-export const KANBAN_STORAGE_KEYS = {
-  viewMode: (workspaceId: string) => `kanban:view-mode:${workspaceId}`,
-  collapsedColumns: (workspaceId: string) => `kanban:collapsed-columns:${workspaceId}`,
-  showArchived: (workspaceId: string) => `kanban:show-archived:${workspaceId}`,
-} as const;
-
 /** Directory name for kanban board data files under ~/.mux/ */
 export const KANBAN_DATA_DIR = "kanban";
 

@@ -182,10 +182,14 @@ export class KanbanService {
   ): Promise<{ success: true; data: void } | { success: false; error: string }> {
     const board = await this.getBoard(workspaceId);
 
-    // Validate all task IDs exist in this column
+    // Validate all task IDs exist and belong to this column
+    const currentOrder = board.taskOrder[columnId] ?? [];
     for (const id of taskIds) {
       if (!board.tasks[id]) {
         return { success: false, error: `Task ${id} not found` };
+      }
+      if (!currentOrder.includes(id)) {
+        return { success: false, error: `Task ${id} is not in column ${columnId}` };
       }
     }
 
@@ -278,10 +282,15 @@ export class KanbanService {
     if (queuedTasks.length === 0) return null;
 
     const task = queuedTasks[0];
-    task.queued = false;
-    task.queuedAt = undefined;
 
     const result = await this.moveTask(workspaceId, task.id, "in_progress");
-    return result.success ? result.data : null;
+    if (!result.success) return null;
+
+    // Clear queued flags on the persisted task after successful move
+    result.data.queued = false;
+    result.data.queuedAt = undefined;
+    await this.saveBoard(await this.getBoard(workspaceId));
+
+    return result.data;
   }
 }

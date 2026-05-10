@@ -3,6 +3,7 @@
  */
 import { useCallback, useState } from "react";
 
+import type { KanbanTaskPriority } from "@/common/types/kanban";
 import { useAPI } from "@/browser/contexts/API";
 import {
   Dialog,
@@ -67,7 +68,7 @@ export function TaskCreateModal(props: TaskCreateModalProps) {
         projectPath,
         title: trimmed,
         description: form.description.trim() || undefined,
-        priority: (form.priority || undefined) as "urgent" | "high" | "medium" | "low" | undefined,
+        priority: (form.priority || undefined) as KanbanTaskPriority | undefined,
         labels: form.labels.trim()
           ? form.labels
               .split(",")

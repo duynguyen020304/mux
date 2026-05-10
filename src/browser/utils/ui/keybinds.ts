@@ -350,7 +350,7 @@ export const KEYBINDS = {
   // macOS: Cmd+P, Win/Linux: Ctrl+P
   TOGGLE_SIDEBAR: { key: "P", ctrl: true },
   /** Toggle between chat and kanban board views */
-  TOGGLE_KANBAN: { key: "K", ctrl: true },
+  TOGGLE_KANBAN: { key: "K", ctrl: true, shift: true },
 
   /** Cycle through configured models */
   CYCLE_MODEL: { key: "/", ctrl: true },

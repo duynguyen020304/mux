@@ -96,7 +96,7 @@ describe("KanbanService.createTask", () => {
     expect(backlogOrder).toContain(result.success ? result.data.id : "");
   });
 
-  test("rejects empty title", async () => {
+  test("accepts empty title (UI validates)", async () => {
     // Title is required by convention — the service doesn't enforce it,
     // but the modal does. We just verify the task gets created with the given title.
     const result = await service.createTask({
@@ -316,6 +316,81 @@ describe("KanbanService.archiveTask", () => {
     if (!result.success) return;
     expect(result.data.status).toBe("backlog");
     expect(result.data.archivedAt).toBeUndefined();
+  });
+});
+
+describe("KanbanService.updateColumn", () => {
+  test("updates column title", async () => {
+    const result = await service.updateColumn(WS_ID, "backlog", { title: "Todo" });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.title).toBe("Todo");
+  });
+
+  test("updates column wipLimit", async () => {
+    const result = await service.updateColumn(WS_ID, "backlog", { wipLimit: 5 });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.wipLimit).toBe(5);
+  });
+
+  test("clears wipLimit when set to null", async () => {
+    await service.updateColumn(WS_ID, "backlog", { wipLimit: 5 });
+    const result = await service.updateColumn(WS_ID, "backlog", { wipLimit: null });
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+    expect(result.data.wipLimit).toBeUndefined();
+  });
+
+  test("returns error for nonexistent column", async () => {
+    const result = await service.updateColumn(WS_ID, "nonexistent", { title: "X" });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("KanbanService.promoteQueuedTask", () => {
+  test("returns null when no queued tasks", async () => {
+    const result = await service.promoteQueuedTask(WS_ID);
+    expect(result).toBeNull();
+  });
+
+  test("promotes oldest queued task to in_progress", async () => {
+    const t1 = await service.createTask({
+      workspaceId: WS_ID,
+      projectPath: PROJECT_PATH,
+      title: "Queued 1",
+    });
+    const t2 = await service.createTask({
+      workspaceId: WS_ID,
+      projectPath: PROJECT_PATH,
+      title: "Queued 2",
+    });
+    if (!t1.success || !t2.success) return;
+
+    // Manually set queued flags — createTask doesn't accept these fields
+    const board = await service.getBoard(WS_ID);
+    board.tasks[t1.data.id].queued = true;
+    board.tasks[t1.data.id].queuedAt = 100;
+    board.tasks[t2.data.id].queued = true;
+    board.tasks[t2.data.id].queuedAt = 200;
+
+    const promoted = await service.promoteQueuedTask(WS_ID);
+    expect(promoted).not.toBeNull();
+    expect(promoted!.id).toBe(t1.data.id); // oldest first
+    expect(promoted!.status).toBe("in_progress");
+    expect(promoted!.queued).toBe(false);
+    expect(promoted!.queuedAt).toBeUndefined();
+  });
+
+  test("returns null when all tasks have queued=false", async () => {
+    await service.createTask({
+      workspaceId: WS_ID,
+      projectPath: PROJECT_PATH,
+      title: "Not queued",
+    });
+
+    const result = await service.promoteQueuedTask(WS_ID);
+    expect(result).toBeNull();
   });
 });
 
