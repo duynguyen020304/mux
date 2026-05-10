@@ -6,6 +6,7 @@ import {
   LEFT_SIDEBAR_WIDTH_KEY,
   RIGHT_SIDEBAR_WIDTH_KEY,
   getReviewImmersiveKey,
+  getKanbanViewModeKey,
 } from "@/common/constants/storage";
 import { useResizableSidebar } from "@/browser/hooks/useResizableSidebar";
 import { useResizeObserver } from "@/browser/hooks/useResizeObserver";
@@ -26,6 +27,7 @@ import {
   LEFT_SIDEBAR_MIN_WIDTH_PX,
 } from "@/constants/layout";
 import { ChatPane } from "../ChatPane/ChatPane";
+import { KanbanView } from "../KanbanBoard/KanbanView";
 
 // ChatPane uses tailwind `min-w-96`.
 const CHAT_PANE_MIN_WIDTH_PX = 384;
@@ -180,6 +182,11 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = (props) => {
   const [isReviewImmersive] = usePersistedState(getReviewImmersiveKey(props.workspaceId), false, {
     listener: true,
   });
+  const [kanbanViewMode] = usePersistedState<"chat" | "kanban">(
+    getKanbanViewModeKey(props.workspaceId),
+    "chat",
+    { listener: true }
+  );
   const backgroundBashError = useBackgroundBashError();
 
   if (!workspaceState) {
@@ -237,19 +244,23 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = (props) => {
       {/* Keep the transcript viewport mounted across workspace switches so the browser doesn't
           visually tear the pane while the new workspace content hydrates. ChatPane resets its
           per-workspace local UI state internally, and the composer remains keyed by workspaceId. */}
-      <ChatPane
-        workspaceId={props.workspaceId}
-        workspaceState={workspaceState}
-        projectPath={props.projectPath}
-        projectName={props.projectName}
-        workspaceName={props.workspaceName}
-        namedWorkspacePath={props.namedWorkspacePath}
-        leftSidebarCollapsed={props.leftSidebarCollapsed}
-        onToggleLeftSidebarCollapsed={props.onToggleLeftSidebarCollapsed}
-        runtimeConfig={props.runtimeConfig}
-        onOpenTerminal={handleOpenTerminal}
-        immersiveHidden={isReviewImmersive}
-      />
+      {kanbanViewMode === "kanban" ? (
+        <KanbanView workspaceId={props.workspaceId} projectPath={props.projectPath} />
+      ) : (
+        <ChatPane
+          workspaceId={props.workspaceId}
+          workspaceState={workspaceState}
+          projectPath={props.projectPath}
+          projectName={props.projectName}
+          workspaceName={props.workspaceName}
+          namedWorkspacePath={props.namedWorkspacePath}
+          leftSidebarCollapsed={props.leftSidebarCollapsed}
+          onToggleLeftSidebarCollapsed={props.onToggleLeftSidebarCollapsed}
+          runtimeConfig={props.runtimeConfig}
+          onOpenTerminal={handleOpenTerminal}
+          immersiveHidden={isReviewImmersive}
+        />
+      )}
 
       <RightSidebar
         key={props.workspaceId}

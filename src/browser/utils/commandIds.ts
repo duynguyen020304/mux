@@ -42,6 +42,8 @@ export const CommandIds = {
   navRightSidebarAddTool: () => "nav:rightSidebar:addTool" as const,
   navToggleOutput: () => "nav:toggle-output" as const,
   navOpenLogFile: () => "nav:open-log-file" as const,
+  navToggleKanban: () => "nav:toggle-kanban" as const,
+  kanbanNewTask: () => "kanban:new-task" as const,
 
   // Chat commands
   chatClear: () => "chat:clear" as const,

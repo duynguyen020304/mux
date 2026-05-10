@@ -349,6 +349,8 @@ export const KEYBINDS = {
   // VS Code-style quick toggle
   // macOS: Cmd+P, Win/Linux: Ctrl+P
   TOGGLE_SIDEBAR: { key: "P", ctrl: true },
+  /** Toggle between chat and kanban board views */
+  TOGGLE_KANBAN: { key: "K", ctrl: true },
 
   /** Cycle through configured models */
   CYCLE_MODEL: { key: "/", ctrl: true },

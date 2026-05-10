@@ -37,6 +37,7 @@ import { BrowserBridgeTokenManager } from "@/node/services/browser/BrowserBridge
 import { BrowserControlService } from "@/node/services/browser/BrowserControlService";
 import { BrowserSessionStateHub } from "@/node/services/browser/BrowserSessionStateHub";
 import { DevToolsService } from "@/node/services/devToolsService";
+import { KanbanService } from "@/node/services/kanbanService";
 import { SessionTimingService } from "@/node/services/sessionTimingService";
 import { AnalyticsService } from "@/node/services/analytics/analyticsService";
 import { ExperimentsService } from "@/node/services/experimentsService";
@@ -83,6 +84,7 @@ export class ServiceContainer {
   public readonly aiService: CoreServices["aiService"];
   public readonly workspaceService: CoreServices["workspaceService"];
   public readonly taskService: CoreServices["taskService"];
+  public readonly kanbanService: KanbanService;
   public readonly providerService: CoreServices["providerService"];
   public readonly mcpConfigService: CoreServices["mcpConfigService"];
   public readonly mcpServerManager: CoreServices["mcpServerManager"];
@@ -207,6 +209,7 @@ export class ServiceContainer {
     });
     this.workspaceService = core.workspaceService;
     this.taskService = core.taskService;
+    this.kanbanService = new KanbanService(this.config);
     this.providerService = core.providerService;
     this.mcpConfigService = core.mcpConfigService;
     this.mcpServerManager = core.mcpServerManager;
@@ -472,6 +475,7 @@ export class ServiceContainer {
       projectService: this.projectService,
       workspaceService: this.workspaceService,
       taskService: this.taskService,
+      kanbanService: this.kanbanService,
       providerService: this.providerService,
       muxGatewayOauthService: this.muxGatewayOauthService,
       muxGovernorOauthService: this.muxGovernorOauthService,

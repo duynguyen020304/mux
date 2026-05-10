@@ -587,6 +587,13 @@ export function getReviewsKey(workspaceId: string): string {
 export function getReviewImmersiveKey(workspaceId: string): string {
   return `review-immersive:${workspaceId}`;
 }
+/**
+ * Get the localStorage key for kanban view mode per workspace.
+ * Format: "kanban:view-mode:{workspaceId}"
+ */
+export function getKanbanViewModeKey(workspaceId: string): string {
+  return `kanban:view-mode:${workspaceId}`;
+}
 
 /**
  * Get the localStorage key for auto-compaction enabled preference per workspace

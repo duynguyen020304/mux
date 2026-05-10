@@ -11,6 +11,7 @@ import {
   getRightSidebarLayoutKey,
   RIGHT_SIDEBAR_COLLAPSED_KEY,
   RIGHT_SIDEBAR_TAB_KEY,
+  getKanbanViewModeKey,
 } from "@/common/constants/storage";
 import { readPersistedState, updatePersistedState } from "@/browser/hooks/usePersistedState";
 import { CommandIds } from "@/browser/utils/commandIds";
@@ -559,6 +560,26 @@ export function buildCoreSources(p: BuildSourcesParams): Array<() => CommandActi
             if (!logPath) return;
 
             window.open(toFileUrl(logPath), "_blank", "noopener");
+          },
+        },
+        {
+          id: CommandIds.navToggleKanban(),
+          title:
+            readPersistedState<"chat" | "kanban">(getKanbanViewModeKey(wsId), "chat") === "kanban"
+              ? "Switch to Chat"
+              : "Switch to Kanban Board",
+          section: section.navigation,
+          keywords: ["kanban", "board", "tasks", "chat", "view"],
+          shortcutHint: formatKeybind(KEYBINDS.TOGGLE_KANBAN),
+          run: () => {
+            const current = readPersistedState<"chat" | "kanban">(
+              getKanbanViewModeKey(wsId),
+              "chat"
+            );
+            updatePersistedState<"chat" | "kanban">(
+              getKanbanViewModeKey(wsId),
+              current === "kanban" ? "chat" : "kanban"
+            );
           },
         },
         {

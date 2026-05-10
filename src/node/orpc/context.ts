@@ -27,6 +27,7 @@ import type { SigningService } from "@/node/services/signingService";
 import type { SessionTimingService } from "@/node/services/sessionTimingService";
 import type { SessionUsageService } from "@/node/services/sessionUsageService";
 import type { TaskService } from "@/node/services/taskService";
+import type { KanbanService } from "@/node/services/kanbanService";
 import type { BrowserBridgeServer } from "@/node/services/browser/BrowserBridgeServer";
 import type { AgentBrowserSessionDiscoveryService } from "@/node/services/browser/AgentBrowserSessionDiscoveryService";
 import type { BrowserBridgeTokenManager } from "@/node/services/browser/BrowserBridgeTokenManager";
@@ -48,6 +49,7 @@ export interface ORPCContext {
   projectService: ProjectService;
   workspaceService: WorkspaceService;
   taskService: TaskService;
+  kanbanService: KanbanService;
   providerService: ProviderService;
   muxGatewayOauthService: MuxGatewayOauthService;
   muxGovernorOauthService: MuxGovernorOauthService;

@@ -7,12 +7,15 @@ import { ThinkingLevelSchema } from "../../types/thinking";
 import { CODER_ARCHIVE_BEHAVIORS } from "../coderArchiveBehavior";
 import { WORKTREE_ARCHIVE_BEHAVIORS } from "../worktreeArchiveBehavior";
 import { TaskSettingsSchema } from "./taskSettings";
+import { KanbanSettingsSchema } from "./kanbanSettings";
 import { HEARTBEAT_MAX_INTERVAL_MS, HEARTBEAT_MIN_INTERVAL_MS } from "@/constants/heartbeat";
 
 export { RuntimeEnablementOverridesSchema } from "../../schemas/runtimeEnablement";
 export type { RuntimeEnablementOverrides } from "../../schemas/runtimeEnablement";
 export { TaskSettingsSchema } from "./taskSettings";
 export type { TaskSettings } from "./taskSettings";
+export { KanbanSettingsSchema } from "./kanbanSettings";
+export type { KanbanSettings } from "./kanbanSettings";
 
 export const AgentAiDefaultsEntrySchema = z.object({
   modelString: z.string().optional(),
@@ -53,6 +56,7 @@ export const AppConfigOnDiskSchema = z
     featureFlagOverrides: z.record(z.string(), FeatureFlagOverrideSchema).optional(),
     layoutPresets: z.unknown().optional(),
     taskSettings: TaskSettingsSchema.optional(),
+    kanbanSettings: KanbanSettingsSchema.optional(),
     muxGatewayEnabled: z.boolean().optional(),
     llmDebugLogs: z.boolean().optional(),
     heartbeatDefaultPrompt: z.string().optional(),

@@ -260,3 +260,13 @@ export {
   workspace,
 } from "./schemas/api";
 export type { WorkspaceSendMessageOutput } from "./schemas/api";
+
+// Kanban schemas
+export {
+  kanban,
+  KanbanBoardDataSchema,
+  KanbanColumnSchema,
+  KanbanTaskSchema,
+  KanbanTaskStatusSchema,
+  KanbanTaskPrioritySchema,
+} from "./schemas/kanban";

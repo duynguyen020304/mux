@@ -4290,6 +4290,83 @@ export const router = (authToken?: string) => {
           });
         }),
     },
+
+    kanban: {
+      getBoard: t
+        .input(schemas.kanban.getBoard.input)
+        .output(schemas.kanban.getBoard.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.getBoard(input.workspaceId);
+        }),
+
+      createTask: t
+        .input(schemas.kanban.createTask.input)
+        .output(schemas.kanban.createTask.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.createTask(input);
+        }),
+
+      updateTask: t
+        .input(schemas.kanban.updateTask.input)
+        .output(schemas.kanban.updateTask.output)
+        .handler(async ({ context, input }) => {
+          const { taskId, workspaceId, ...updates } = input;
+          return context.kanbanService.updateTask(workspaceId, taskId, updates);
+        }),
+
+      deleteTask: t
+        .input(schemas.kanban.deleteTask.input)
+        .output(schemas.kanban.deleteTask.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.deleteTask(input.workspaceId, input.taskId);
+        }),
+
+      moveTask: t
+        .input(schemas.kanban.moveTask.input)
+        .output(schemas.kanban.moveTask.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.moveTask(
+            input.workspaceId,
+            input.taskId,
+            input.toStatus,
+            input.toIndex ?? undefined
+          );
+        }),
+
+      reorderTasks: t
+        .input(schemas.kanban.reorderTasks.input)
+        .output(schemas.kanban.reorderTasks.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.reorderTasks(
+            input.workspaceId,
+            input.columnId,
+            input.taskIds
+          );
+        }),
+
+      archiveTask: t
+        .input(schemas.kanban.archiveTask.input)
+        .output(schemas.kanban.archiveTask.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.archiveTask(input.workspaceId, input.taskId, input.archive);
+        }),
+
+      updateColumn: t
+        .input(schemas.kanban.updateColumn.input)
+        .output(schemas.kanban.updateColumn.output)
+        .handler(async ({ context, input }) => {
+          const { workspaceId, columnId, ...updates } = input;
+          return context.kanbanService.updateColumn(workspaceId, columnId, updates);
+        }),
+
+      reorderColumns: t
+        .input(schemas.kanban.reorderColumns.input)
+        .output(schemas.kanban.reorderColumns.output)
+        .handler(async ({ context, input }) => {
+          return context.kanbanService.reorderColumns(input.workspaceId, input.columnIds);
+        }),
+    },
+
     window: {
       setTitle: t
         .input(schemas.window.setTitle.input)

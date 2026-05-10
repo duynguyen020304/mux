@@ -1,0 +1,26 @@
+import { z } from "zod";
+
+export const KANBAN_SETTINGS_LIMITS = {
+  maxParallelKanbanTasks: { min: 1, max: 50, default: 5 },
+} as const;
+
+export const KanbanColumnSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  status: z.enum(["backlog", "in_progress", "in_review", "done", "archived"]),
+  wipLimit: z.number().int().min(1).optional(),
+  collapsed: z.boolean().optional(),
+});
+
+export const KanbanSettingsSchema = z.object({
+  maxParallelKanbanTasks: z
+    .number()
+    .int()
+    .min(KANBAN_SETTINGS_LIMITS.maxParallelKanbanTasks.min)
+    .max(KANBAN_SETTINGS_LIMITS.maxParallelKanbanTasks.max)
+    .optional(),
+  columns: z.array(KanbanColumnSchema).optional(),
+  autoArchiveCompletedTasks: z.boolean().optional(),
+});
+
+export type KanbanSettings = z.infer<typeof KanbanSettingsSchema>;
