@@ -17,10 +17,12 @@ import {
   type DragOverEvent,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { Plus } from "lucide-react";
+import { MessageSquare, Plus } from "lucide-react";
 
 import type { KanbanBoardData, KanbanTask } from "@/common/types/kanban";
 import { groupTasksByColumn } from "@/common/utils/kanban";
+import { getKanbanViewModeKey } from "@/common/constants/storage";
+import { usePersistedState } from "@/browser/hooks/usePersistedState";
 import { useAPI } from "@/browser/contexts/API";
 import { Button } from "@/browser/components/Button/Button";
 import {
@@ -28,6 +30,7 @@ import {
   PositionedMenuItem,
 } from "@/browser/components/PositionedMenu/PositionedMenu";
 import { useContextMenuPosition } from "@/browser/hooks/useContextMenuPosition";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../Tooltip/Tooltip";
 import { KanbanColumn } from "./KanbanColumn";
 import { KanbanCardPreview } from "./KanbanCardPreview";
 import { TaskCreateModal } from "./KanbanTaskModal/TaskCreateModal";
@@ -54,6 +57,12 @@ export function KanbanBoard(props: KanbanBoardProps) {
   // Context menu state
   const ctxMenu = useContextMenuPosition({ longPress: false });
   const [ctxTaskId, setCtxTaskId] = useState<string | null>(null);
+
+  // Kanban ↔ Chat toggle — shared with WorkspaceMenuBar via persisted state
+  const [, setKanbanViewMode] = usePersistedState<"chat" | "kanban">(
+    getKanbanViewModeKey(workspaceId),
+    "chat"
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -219,9 +228,23 @@ export function KanbanBoard(props: KanbanBoardProps) {
   return (
     <>
       {/* Board header */}
-      <div className="flex items-center gap-2 border-b border-border px-4 py-2">
+      <div className="border-border flex items-center gap-2 border-b px-4 py-2">
         <h2 className="text-foreground text-sm font-semibold">Board</h2>
         <div className="flex-1" />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => setKanbanViewMode("chat")}
+              className="text-muted hover:text-foreground flex h-6 w-6 shrink-0 items-center justify-center rounded"
+              aria-label="Switch to Chat"
+            >
+              <MessageSquare className="h-3.5 w-3.5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" align="center">
+            Switch to Chat
+          </TooltipContent>
+        </Tooltip>
         <Button size="xs" onClick={() => setIsCreateOpen(true)}>
           <Plus className="size-3" />
           New Task

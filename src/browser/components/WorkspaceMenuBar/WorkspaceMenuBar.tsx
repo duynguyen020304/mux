@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Bell, BellOff, Ellipsis, Menu, Pencil } from "lucide-react";
+import { Bell, BellOff, Ellipsis, Kanban, Menu, Pencil } from "lucide-react";
 import { CUSTOM_EVENTS, createCustomEvent } from "@/common/constants/events";
 import { EXPERIMENT_IDS } from "@/common/constants/experiments";
 import { cn } from "@/common/lib/utils";
@@ -7,6 +7,7 @@ import { getErrorMessage } from "@/common/utils/errors";
 
 import {
   RIGHT_SIDEBAR_COLLAPSED_KEY,
+  getKanbanViewModeKey,
   getNotifyOnResponseKey,
   getNotifyOnResponseAutoEnableKey,
 } from "@/common/constants/storage";
@@ -158,6 +159,13 @@ export const WorkspaceMenuBar: React.FC<WorkspaceMenuBarProps> = ({
     false
   );
 
+  // Kanban view toggle — shared with KanbanBoard via persisted state
+  const [kanbanViewMode, setKanbanViewMode] = usePersistedState<"chat" | "kanban">(
+    getKanbanViewModeKey(workspaceId),
+    "chat",
+    { listener: true }
+  );
+
   // Popover state for notification settings (interactive on click)
   const [notificationPopoverOpen, setNotificationPopoverOpen] = useState(false);
 
@@ -171,6 +179,10 @@ export const WorkspaceMenuBar: React.FC<WorkspaceMenuBarProps> = ({
       void openTerminalPopout(workspaceId, runtimeConfig);
     }
   }, [workspaceId, openTerminalPopout, runtimeConfig, onOpenTerminal]);
+
+  const handleToggleKanban = useCallback(() => {
+    setKanbanViewMode(kanbanViewMode === "kanban" ? "chat" : "kanban");
+  }, [kanbanViewMode, setKanbanViewMode]);
 
   const isTouchMobileScreen =
     typeof window !== "undefined" &&
@@ -705,6 +717,23 @@ export const WorkspaceMenuBar: React.FC<WorkspaceMenuBarProps> = ({
             </TooltipContent>
           </Tooltip>
         </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleToggleKanban}
+              className="text-muted hover:text-foreground ml-1 h-6 w-6 shrink-0 [&_svg]:h-4 [&_svg]:w-4"
+              aria-label={kanbanViewMode === "kanban" ? "Switch to Chat" : "Switch to Kanban Board"}
+            >
+              <Kanban className="h-3.5 w-3.5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" align="center">
+            {kanbanViewMode === "kanban" ? "Switch to Chat" : "Switch to Kanban Board"} (
+            {formatKeybind(KEYBINDS.TOGGLE_KANBAN)})
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
