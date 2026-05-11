@@ -27,58 +27,64 @@ afterEach(async () => {
 
 describe("coerceBoardData", () => {
   test("returns null for null input", () => {
-    expect(coerceBoardData(null, "ws1")).toBeNull();
+    expect(coerceBoardData(null, "/test/project")).toBeNull();
   });
 
   test("returns null for non-object input", () => {
-    expect(coerceBoardData("string", "ws1")).toBeNull();
-    expect(coerceBoardData(42, "ws1")).toBeNull();
+    expect(coerceBoardData("string", "/test/project")).toBeNull();
+    expect(coerceBoardData(42, "/test/project")).toBeNull();
   });
 
   test("returns null for wrong version", () => {
-    const raw = { version: 999, workspaceId: "ws1", columns: [], tasks: {}, taskOrder: {} };
-    expect(coerceBoardData(raw, "ws1")).toBeNull();
+    const raw = {
+      version: 999,
+      projectPath: "/test/project",
+      columns: [],
+      tasks: {},
+      taskOrder: {},
+    };
+    expect(coerceBoardData(raw, "/test/project")).toBeNull();
   });
 
-  test("returns null for missing workspaceId", () => {
+  test("returns null for missing projectPath", () => {
     const raw = { version: 1, columns: [], tasks: {}, taskOrder: {} };
-    expect(coerceBoardData(raw, "ws1")).toBeNull();
+    expect(coerceBoardData(raw, "/test/project")).toBeNull();
   });
 
   test("returns null for missing columns", () => {
-    const raw = { version: 1, workspaceId: "ws1", tasks: {}, taskOrder: {} };
-    expect(coerceBoardData(raw, "ws1")).toBeNull();
+    const raw = { version: 1, projectPath: "/test/project", tasks: {}, taskOrder: {} };
+    expect(coerceBoardData(raw, "/test/project")).toBeNull();
   });
 
   test("returns null for missing tasks", () => {
-    const raw = { version: 1, workspaceId: "ws1", columns: [], taskOrder: {} };
-    expect(coerceBoardData(raw, "ws1")).toBeNull();
+    const raw = { version: 1, projectPath: "/test/project", columns: [], taskOrder: {} };
+    expect(coerceBoardData(raw, "/test/project")).toBeNull();
   });
 
   test("returns null for missing taskOrder", () => {
-    const raw = { version: 1, workspaceId: "ws1", columns: [], tasks: {} };
-    expect(coerceBoardData(raw, "ws1")).toBeNull();
+    const raw = { version: 1, projectPath: "/test/project", columns: [], tasks: {} };
+    expect(coerceBoardData(raw, "/test/project")).toBeNull();
   });
 
   test("returns valid board data for correct structure", () => {
     const raw = {
       version: 1,
-      workspaceId: "ws1",
+      projectPath: "/test/project",
       columns: [{ id: "backlog", title: "Backlog", status: "backlog" }],
       tasks: {},
       taskOrder: { backlog: [] },
     };
-    const result = coerceBoardData(raw, "ws1");
+    const result = coerceBoardData(raw, "/test/project");
     expect(result).not.toBeNull();
-    expect(result!.workspaceId).toBe("ws1");
+    expect(result!.projectPath).toBe("/test/project");
     expect(result!.columns).toHaveLength(1);
   });
 });
 
 describe("readBoard", () => {
   test("returns empty board when file does not exist", async () => {
-    const board = await readBoard(tempDir, "ws-nonexistent");
-    expect(board.workspaceId).toBe("ws-nonexistent");
+    const board = await readBoard(tempDir, "/test/nonexistent");
+    expect(board.projectPath).toBe("/test/nonexistent");
     expect(board.columns.length).toBeGreaterThan(0); // default columns
     expect(board.tasks).toEqual({});
   });
@@ -86,30 +92,39 @@ describe("readBoard", () => {
   test("returns empty board for malformed JSON", async () => {
     const dir = path.join(tempDir, "kanban");
     await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(path.join(dir, "ws1.json"), "not json{{{", "utf-8");
+    // File name is derived from projectPath via getProjectRouteId
+    const { getProjectRouteId } = await import("@/common/utils/projectRouteId");
+    const slug = getProjectRouteId("/test/malformed");
+    await fs.writeFile(path.join(dir, `${slug}.json`), "not json{{{", "utf-8");
 
-    const board = await readBoard(tempDir, "ws1");
-    expect(board.workspaceId).toBe("ws1");
+    const board = await readBoard(tempDir, "/test/malformed");
+    expect(board.projectPath).toBe("/test/malformed");
   });
 
   test("returns empty board for invalid structure", async () => {
     const dir = path.join(tempDir, "kanban");
     await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(path.join(dir, "ws1.json"), JSON.stringify({ version: 999 }), "utf-8");
+    const { getProjectRouteId } = await import("@/common/utils/projectRouteId");
+    const slug = getProjectRouteId("/test/invalid");
+    await fs.writeFile(path.join(dir, `${slug}.json`), JSON.stringify({ version: 999 }), "utf-8");
 
-    const board = await readBoard(tempDir, "ws1");
-    expect(board.workspaceId).toBe("ws1");
+    const board = await readBoard(tempDir, "/test/invalid");
+    expect(board.projectPath).toBe("/test/invalid");
   });
 
   test("reads valid board data", async () => {
     const dir = path.join(tempDir, "kanban");
     await fs.mkdir(dir, { recursive: true });
 
-    const validBoard = createEmptyBoard("ws1");
+    const { getProjectRouteId } = await import("@/common/utils/projectRouteId");
+    const projectPath = "/test/valid-board";
+    const slug = getProjectRouteId(projectPath);
+
+    const validBoard = createEmptyBoard(projectPath);
     validBoard.tasks["task-1"] = {
       id: "task-1",
-      workspaceId: "ws1",
-      projectPath: "/test",
+      workspaceId: null,
+      projectPath,
       title: "Test task",
       status: "backlog",
       createdAt: Date.now(),
@@ -117,10 +132,10 @@ describe("readBoard", () => {
     };
     validBoard.taskOrder["backlog"] = ["task-1"];
 
-    await fs.writeFile(path.join(dir, "ws1.json"), JSON.stringify(validBoard), "utf-8");
+    await fs.writeFile(path.join(dir, `${slug}.json`), JSON.stringify(validBoard), "utf-8");
 
-    const board = await readBoard(tempDir, "ws1");
-    expect(board.workspaceId).toBe("ws1");
+    const board = await readBoard(tempDir, projectPath);
+    expect(board.projectPath).toBe(projectPath);
     expect(board.tasks["task-1"]).toBeDefined();
     expect(board.tasks["task-1"].title).toBe("Test task");
   });
@@ -128,21 +143,23 @@ describe("readBoard", () => {
 
 describe("writeBoard", () => {
   test("creates directory and writes board file", async () => {
-    const board = createEmptyBoard("ws-write");
+    const projectPath = "/test/write-board";
+    const board = createEmptyBoard(projectPath);
     await writeBoard(tempDir, board);
 
-    const boardPath = getKanbanBoardPath(tempDir, "ws-write");
+    const boardPath = getKanbanBoardPath(tempDir, projectPath);
     const content = await fs.readFile(boardPath, "utf-8");
     const parsed = JSON.parse(content);
-    expect(parsed.workspaceId).toBe("ws-write");
+    expect(parsed.projectPath).toBe(projectPath);
   });
 
   test("round-trips board data correctly", async () => {
-    const board = createEmptyBoard("ws-rt");
+    const projectPath = "/test/round-trip";
+    const board = createEmptyBoard(projectPath);
     board.tasks["t1"] = {
       id: "t1",
-      workspaceId: "ws-rt",
-      projectPath: "/test",
+      workspaceId: null,
+      projectPath,
       title: "Round trip task",
       status: "backlog",
       priority: "high",
@@ -153,7 +170,7 @@ describe("writeBoard", () => {
     board.taskOrder["backlog"] = ["t1"];
 
     await writeBoard(tempDir, board);
-    const read = await readBoard(tempDir, "ws-rt");
+    const read = await readBoard(tempDir, projectPath);
 
     expect(read.tasks["t1"]).toEqual(board.tasks["t1"]);
     expect(read.taskOrder["backlog"]).toEqual(["t1"]);

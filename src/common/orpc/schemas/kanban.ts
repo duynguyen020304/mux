@@ -23,7 +23,7 @@ export const KanbanColumnSchema = z.object({
 
 export const KanbanTaskSchema = z.object({
   id: z.string(),
-  workspaceId: z.string(),
+  workspaceId: z.string().nullable(),
   projectPath: z.string(),
   title: z.string().min(1),
   description: z.string().optional(),
@@ -41,7 +41,7 @@ export const KanbanTaskSchema = z.object({
 
 export const KanbanBoardDataSchema = z.object({
   version: z.literal(1),
-  workspaceId: z.string(),
+  projectPath: z.string(),
   columns: z.array(KanbanColumnSchema),
   tasks: z.record(z.string(), KanbanTaskSchema),
   taskOrder: z.record(z.string(), z.array(z.string())),
@@ -51,13 +51,12 @@ export const KanbanBoardDataSchema = z.object({
 
 export const kanban = {
   getBoard: {
-    input: z.object({ workspaceId: z.string() }),
+    input: z.object({ projectPath: z.string() }),
     output: KanbanBoardDataSchema,
   },
 
   createTask: {
     input: z.object({
-      workspaceId: z.string(),
       projectPath: z.string(),
       title: z.string().min(1),
       description: z.string().optional(),
@@ -73,7 +72,7 @@ export const kanban = {
   updateTask: {
     input: z.object({
       taskId: z.string(),
-      workspaceId: z.string(),
+      projectPath: z.string(),
       title: z.string().min(1).optional(),
       description: z.string().optional(),
       priority: KanbanTaskPrioritySchema.optional(),
@@ -85,14 +84,14 @@ export const kanban = {
   },
 
   deleteTask: {
-    input: z.object({ taskId: z.string(), workspaceId: z.string() }),
+    input: z.object({ taskId: z.string(), projectPath: z.string() }),
     output: ResultSchema(z.void(), z.string()),
   },
 
   moveTask: {
     input: z.object({
       taskId: z.string(),
-      workspaceId: z.string(),
+      projectPath: z.string(),
       toStatus: KanbanTaskStatusSchema,
       toIndex: z.number().int().min(0).optional(),
     }),
@@ -101,7 +100,7 @@ export const kanban = {
 
   reorderTasks: {
     input: z.object({
-      workspaceId: z.string(),
+      projectPath: z.string(),
       columnId: z.string(),
       taskIds: z.array(z.string()),
     }),
@@ -111,7 +110,7 @@ export const kanban = {
   archiveTask: {
     input: z.object({
       taskId: z.string(),
-      workspaceId: z.string(),
+      projectPath: z.string(),
       archive: z.boolean(),
     }),
     output: ResultSchema(KanbanTaskSchema, z.string()),
@@ -119,7 +118,7 @@ export const kanban = {
 
   updateColumn: {
     input: z.object({
-      workspaceId: z.string(),
+      projectPath: z.string(),
       columnId: z.string(),
       title: z.string().min(1).optional(),
       wipLimit: z.number().int().min(1).nullable().optional(),
@@ -129,7 +128,7 @@ export const kanban = {
 
   reorderColumns: {
     input: z.object({
-      workspaceId: z.string(),
+      projectPath: z.string(),
       columnIds: z.array(z.string()),
     }),
     output: ResultSchema(z.void(), z.string()),

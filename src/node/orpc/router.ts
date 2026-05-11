@@ -4296,7 +4296,7 @@ export const router = (authToken?: string) => {
         .input(schemas.kanban.getBoard.input)
         .output(schemas.kanban.getBoard.output)
         .handler(async ({ context, input }) => {
-          return context.kanbanService.getBoard(input.workspaceId);
+          return context.kanbanService.getBoard(input.projectPath);
         }),
 
       createTask: t
@@ -4310,15 +4310,15 @@ export const router = (authToken?: string) => {
         .input(schemas.kanban.updateTask.input)
         .output(schemas.kanban.updateTask.output)
         .handler(async ({ context, input }) => {
-          const { taskId, workspaceId, ...updates } = input;
-          return context.kanbanService.updateTask(workspaceId, taskId, updates);
+          const { taskId, projectPath, ...updates } = input;
+          return context.kanbanService.updateTask(projectPath, taskId, updates);
         }),
 
       deleteTask: t
         .input(schemas.kanban.deleteTask.input)
         .output(schemas.kanban.deleteTask.output)
         .handler(async ({ context, input }) => {
-          return context.kanbanService.deleteTask(input.workspaceId, input.taskId);
+          return context.kanbanService.deleteTask(input.projectPath, input.taskId);
         }),
 
       moveTask: t
@@ -4326,7 +4326,7 @@ export const router = (authToken?: string) => {
         .output(schemas.kanban.moveTask.output)
         .handler(async ({ context, input }) => {
           return context.kanbanService.moveTask(
-            input.workspaceId,
+            input.projectPath,
             input.taskId,
             input.toStatus,
             input.toIndex ?? undefined
@@ -4338,7 +4338,7 @@ export const router = (authToken?: string) => {
         .output(schemas.kanban.reorderTasks.output)
         .handler(async ({ context, input }) => {
           return context.kanbanService.reorderTasks(
-            input.workspaceId,
+            input.projectPath,
             input.columnId,
             input.taskIds
           );
@@ -4348,22 +4348,22 @@ export const router = (authToken?: string) => {
         .input(schemas.kanban.archiveTask.input)
         .output(schemas.kanban.archiveTask.output)
         .handler(async ({ context, input }) => {
-          return context.kanbanService.archiveTask(input.workspaceId, input.taskId, input.archive);
+          return context.kanbanService.archiveTask(input.projectPath, input.taskId, input.archive);
         }),
 
       updateColumn: t
         .input(schemas.kanban.updateColumn.input)
         .output(schemas.kanban.updateColumn.output)
         .handler(async ({ context, input }) => {
-          const { workspaceId, columnId, ...updates } = input;
-          return context.kanbanService.updateColumn(workspaceId, columnId, updates);
+          const { projectPath, columnId, ...updates } = input;
+          return context.kanbanService.updateColumn(projectPath, columnId, updates);
         }),
 
       reorderColumns: t
         .input(schemas.kanban.reorderColumns.input)
         .output(schemas.kanban.reorderColumns.output)
         .handler(async ({ context, input }) => {
-          return context.kanbanService.reorderColumns(input.workspaceId, input.columnIds);
+          return context.kanbanService.reorderColumns(input.projectPath, input.columnIds);
         }),
     },
 

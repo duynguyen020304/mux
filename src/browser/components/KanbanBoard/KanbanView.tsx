@@ -12,28 +12,27 @@ import { getKanbanTaskStore, useKanbanBoard } from "@/browser/stores/KanbanTaskS
 import { KanbanBoard } from "./KanbanBoard";
 
 interface KanbanViewProps {
-  workspaceId: string;
   projectPath: string;
 }
 
 export function KanbanView(props: KanbanViewProps) {
-  const { workspaceId, projectPath } = props;
+  const { projectPath } = props;
   const { api } = useAPI();
-  const board = useKanbanBoard(workspaceId);
+  const board = useKanbanBoard(projectPath);
   const store = getKanbanTaskStore();
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     if (!api) return;
     try {
-      const data = await api.kanban.getBoard({ workspaceId });
-      store.setBoardState(workspaceId, data);
+      const data = await api.kanban.getBoard({ projectPath });
+      store.setBoardState(projectPath, data);
     } catch (e) {
       console.error("[KanbanView] failed to load board:", e);
     } finally {
       setLoading(false);
     }
-  }, [api, workspaceId, store]);
+  }, [api, projectPath, store]);
 
   // Load board from backend on mount
   useEffect(() => {
@@ -50,12 +49,7 @@ export function KanbanView(props: KanbanViewProps) {
 
   return (
     <div className="flex h-full flex-col">
-      <KanbanBoard
-        workspaceId={workspaceId}
-        projectPath={projectPath}
-        board={board}
-        onBoardChanged={() => void refresh()}
-      />
+      <KanbanBoard projectPath={projectPath} board={board} onBoardChanged={() => void refresh()} />
     </div>
   );
 }

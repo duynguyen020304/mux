@@ -183,7 +183,7 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = (props) => {
     listener: true,
   });
   const [kanbanViewMode] = usePersistedState<"chat" | "kanban">(
-    getKanbanViewModeKey(props.workspaceId),
+    getKanbanViewModeKey(props.projectPath),
     "chat",
     { listener: true }
   );
@@ -245,7 +245,7 @@ export const WorkspaceShell: React.FC<WorkspaceShellProps> = (props) => {
           visually tear the pane while the new workspace content hydrates. ChatPane resets its
           per-workspace local UI state internally, and the composer remains keyed by workspaceId. */}
       {kanbanViewMode === "kanban" ? (
-        <KanbanView workspaceId={props.workspaceId} projectPath={props.projectPath} />
+        <KanbanView projectPath={props.projectPath} />
       ) : (
         <ChatPane
           workspaceId={props.workspaceId}

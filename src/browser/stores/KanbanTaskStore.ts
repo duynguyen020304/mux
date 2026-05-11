@@ -2,7 +2,7 @@
  * KanbanTaskStore — reactive store for kanban board data.
  *
  * Follows the MapStore pattern from WorkspaceStore/GitStatusStore.
- * Per-workspace board state with surgical React re-renders via useSyncExternalStore.
+ * Per-project board state with surgical React re-renders via useSyncExternalStore.
  */
 
 import { useSyncExternalStore } from "react";
@@ -18,46 +18,46 @@ export class KanbanTaskStore {
   // ── Subscriptions ──
 
   subscribe = this.boardStates.subscribeAny;
-  subscribeKey = (workspaceId: string, listener: () => void) =>
-    this.boardStates.subscribeKey(workspaceId, listener);
+  subscribeKey = (projectPath: string, listener: () => void) =>
+    this.boardStates.subscribeKey(projectPath, listener);
 
   // ── Getters ──
 
-  getBoardState(workspaceId: string): KanbanBoardData {
-    if (!this.boardStates.has(workspaceId)) {
+  getBoardState(projectPath: string): KanbanBoardData {
+    if (!this.boardStates.has(projectPath)) {
       // Cache the empty board so useSyncExternalStore sees a stable reference
       // (createEmptyBoard returns a new object every call → infinite re-render loop)
-      let board = this.boardCache.get(workspaceId);
+      let board = this.boardCache.get(projectPath);
       if (!board) {
-        board = createEmptyBoard(workspaceId);
-        this.boardCache.set(workspaceId, board);
+        board = createEmptyBoard(projectPath);
+        this.boardCache.set(projectPath, board);
       }
       return board;
     }
-    return this.boardStates.get(workspaceId, () => {
-      return this.boardCache.get(workspaceId) ?? createEmptyBoard(workspaceId);
+    return this.boardStates.get(projectPath, () => {
+      return this.boardCache.get(projectPath) ?? createEmptyBoard(projectPath);
     });
   }
 
   // ── Mutations (called from IPC handlers, never during render) ──
 
   /** Set board data from backend response. */
-  setBoardState(workspaceId: string, board: KanbanBoardData): void {
-    this.boardCache.set(workspaceId, board);
-    this.boardStates.bump(workspaceId);
+  setBoardState(projectPath: string, board: KanbanBoardData): void {
+    this.boardCache.set(projectPath, board);
+    this.boardStates.bump(projectPath);
   }
 
-  /** Remove workspace data (e.g., when workspace is archived/removed). */
-  clearWorkspace(workspaceId: string): void {
-    this.boardCache.delete(workspaceId);
-    this.boardStates.delete(workspaceId);
+  /** Remove project data (e.g., when project is archived/removed). */
+  clearProject(projectPath: string): void {
+    this.boardCache.delete(projectPath);
+    this.boardStates.delete(projectPath);
   }
 
-  /** Clean up stale entries when workspace list changes. */
-  syncWorkspaces(activeWorkspaceIds: Set<string>): void {
-    for (const id of Array.from(this.boardCache.keys())) {
-      if (!activeWorkspaceIds.has(id)) {
-        this.clearWorkspace(id);
+  /** Clean up stale entries when project list changes. */
+  syncProjects(activeProjectPaths: Set<string>): void {
+    for (const path of Array.from(this.boardCache.keys())) {
+      if (!activeProjectPaths.has(path)) {
+        this.clearProject(path);
       }
     }
   }
@@ -74,12 +74,12 @@ function getInstance(): KanbanTaskStore {
 
 // ── React Hooks ──
 
-/** Subscribe to board state for a specific workspace. Re-renders only on changes to that workspace's board. */
-export function useKanbanBoard(workspaceId: string): KanbanBoardData {
+/** Subscribe to board state for a specific project. Re-renders only on changes to that project's board. */
+export function useKanbanBoard(projectPath: string): KanbanBoardData {
   const store = getInstance();
   return useSyncExternalStore(
-    (listener) => store.subscribeKey(workspaceId, listener),
-    () => store.getBoardState(workspaceId)
+    (listener) => store.subscribeKey(projectPath, listener),
+    () => store.getBoardState(projectPath)
   );
 }
 

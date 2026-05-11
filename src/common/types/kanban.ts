@@ -22,7 +22,8 @@ export type KanbanTaskPriority = "urgent" | "high" | "medium" | "low";
 /** A single task on the kanban board. */
 export interface KanbanTask {
   id: string;
-  workspaceId: string;
+  /** Workspace that created/owns this task — null for backlog tasks not yet assigned to a workspace. */
+  workspaceId: string | null;
   projectPath: string;
   title: string;
   description?: string;
@@ -49,10 +50,10 @@ export interface KanbanColumn {
   collapsed?: boolean;
 }
 
-/** The full board state persisted per workspace. */
+/** The full board state persisted per project (shared across all workspaces in a project). */
 export interface KanbanBoardData {
   version: 1;
-  workspaceId: string;
+  projectPath: string;
   columns: KanbanColumn[];
   tasks: Record<string, KanbanTask>;
   /** columnId -> ordered task IDs */

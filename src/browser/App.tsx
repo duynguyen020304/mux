@@ -815,9 +815,9 @@ function AppInner() {
         setSidebarCollapsed((prev) => !prev);
       } else if (matchesKeybind(e, KEYBINDS.TOGGLE_KANBAN)) {
         e.preventDefault();
-        const wsId = selectedWorkspace?.workspaceId;
-        if (wsId) {
-          const key = getKanbanViewModeKey(wsId);
+        const pp = selectedWorkspace?.projectPath;
+        if (pp) {
+          const key = getKanbanViewModeKey(pp);
           const current = readPersistedState<"chat" | "kanban">(key, "chat");
           updatePersistedState(key, current === "kanban" ? "chat" : "kanban");
         }

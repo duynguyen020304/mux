@@ -161,7 +161,7 @@ export const WorkspaceMenuBar: React.FC<WorkspaceMenuBarProps> = ({
 
   // Kanban view toggle — shared with KanbanBoard via persisted state
   const [kanbanViewMode, setKanbanViewMode] = usePersistedState<"chat" | "kanban">(
-    getKanbanViewModeKey(workspaceId),
+    getKanbanViewModeKey(projectPath),
     "chat",
     { listener: true }
   );

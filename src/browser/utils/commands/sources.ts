@@ -534,6 +534,7 @@ export function buildCoreSources(p: BuildSourcesParams): Array<() => CommandActi
 
     // Right sidebar layout commands require a selected workspace (layout is per-workspace)
     const wsId = p.selectedWorkspace?.workspaceId;
+    const projectPath = p.selectedWorkspace?.projectPath;
     if (wsId) {
       list.push(
         {
@@ -565,19 +566,23 @@ export function buildCoreSources(p: BuildSourcesParams): Array<() => CommandActi
         {
           id: CommandIds.navToggleKanban(),
           title:
-            readPersistedState<"chat" | "kanban">(getKanbanViewModeKey(wsId), "chat") === "kanban"
+            readPersistedState<"chat" | "kanban">(
+              getKanbanViewModeKey(projectPath ?? ""),
+              "chat"
+            ) === "kanban"
               ? "Switch to Chat"
               : "Switch to Kanban Board",
           section: section.navigation,
           keywords: ["kanban", "board", "tasks", "chat", "view"],
           shortcutHint: formatKeybind(KEYBINDS.TOGGLE_KANBAN),
           run: () => {
+            if (!projectPath) return;
             const current = readPersistedState<"chat" | "kanban">(
-              getKanbanViewModeKey(wsId),
+              getKanbanViewModeKey(projectPath),
               "chat"
             );
             updatePersistedState<"chat" | "kanban">(
-              getKanbanViewModeKey(wsId),
+              getKanbanViewModeKey(projectPath),
               current === "kanban" ? "chat" : "kanban"
             );
           },

@@ -78,7 +78,7 @@ export function TaskDetailModal(props: TaskDetailModalProps) {
     try {
       if (!api) return;
       const result = await api.kanban.updateTask({
-        workspaceId: task.workspaceId,
+        projectPath: task.projectPath,
         taskId: task.id,
         title: trimmed,
         description: form.description.trim() || undefined,
@@ -114,7 +114,7 @@ export function TaskDetailModal(props: TaskDetailModalProps) {
     try {
       if (!api) return;
       const result = await api.kanban.deleteTask({
-        workspaceId: task.workspaceId,
+        projectPath: task.projectPath,
         taskId: task.id,
       });
       if (result.success) {

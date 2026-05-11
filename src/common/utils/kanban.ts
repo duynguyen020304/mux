@@ -12,7 +12,7 @@ import { isValidKanbanTransition } from "@/common/types/kanban";
 import { DEFAULT_KANBAN_COLUMNS, KANBAN_DATA_VERSION } from "@/common/constants/kanban";
 
 /** Create an empty board with default columns. */
-export function createEmptyBoard(workspaceId: string): KanbanBoardData {
+export function createEmptyBoard(projectPath: string): KanbanBoardData {
   const columns: KanbanColumn[] = DEFAULT_KANBAN_COLUMNS.map((col) => ({
     ...col,
   }));
@@ -22,7 +22,7 @@ export function createEmptyBoard(workspaceId: string): KanbanBoardData {
   }
   return {
     version: KANBAN_DATA_VERSION,
-    workspaceId,
+    projectPath,
     columns,
     tasks: {},
     taskOrder,

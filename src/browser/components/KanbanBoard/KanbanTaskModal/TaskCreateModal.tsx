@@ -17,7 +17,6 @@ import { Button } from "@/browser/components/Button/Button";
 import { TaskFormFields, type TaskFormData } from "./TaskFormFields";
 
 interface TaskCreateModalProps {
-  workspaceId: string;
   projectPath: string;
   isOpen: boolean;
   onClose: () => void;
@@ -33,7 +32,7 @@ const EMPTY_FORM: TaskFormData = {
 };
 
 export function TaskCreateModal(props: TaskCreateModalProps) {
-  const { workspaceId, projectPath, isOpen, onClose, onCreated } = props;
+  const { projectPath, isOpen, onClose, onCreated } = props;
   const { api } = useAPI();
 
   const [form, setForm] = useState<TaskFormData>(EMPTY_FORM);
@@ -64,7 +63,6 @@ export function TaskCreateModal(props: TaskCreateModalProps) {
     try {
       if (!api) return;
       const result = await api.kanban.createTask({
-        workspaceId,
         projectPath,
         title: trimmed,
         description: form.description.trim() || undefined,
@@ -93,7 +91,7 @@ export function TaskCreateModal(props: TaskCreateModalProps) {
     } finally {
       setIsCreating(false);
     }
-  }, [api, form, workspaceId, projectPath, onCreated, onClose]);
+  }, [api, form, projectPath, onCreated, onClose]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

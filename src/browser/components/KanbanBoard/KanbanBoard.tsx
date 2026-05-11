@@ -37,14 +37,13 @@ import { TaskCreateModal } from "./KanbanTaskModal/TaskCreateModal";
 import { TaskDetailModal } from "./KanbanTaskModal/TaskDetailModal";
 
 interface KanbanBoardProps {
-  workspaceId: string;
   projectPath: string;
   board: KanbanBoardData;
   onBoardChanged?: () => void;
 }
 
 export function KanbanBoard(props: KanbanBoardProps) {
-  const { workspaceId, projectPath, board, onBoardChanged } = props;
+  const { projectPath, board, onBoardChanged } = props;
   const { api } = useAPI();
 
   // Drag state
@@ -60,7 +59,7 @@ export function KanbanBoard(props: KanbanBoardProps) {
 
   // Kanban ↔ Chat toggle — shared with WorkspaceMenuBar via persisted state
   const [, setKanbanViewMode] = usePersistedState<"chat" | "kanban">(
-    getKanbanViewModeKey(workspaceId),
+    getKanbanViewModeKey(projectPath),
     "chat"
   );
 
@@ -85,52 +84,52 @@ export function KanbanBoard(props: KanbanBoardProps) {
     async (taskId: string, toStatus: KanbanTask["status"]) => {
       if (!api) return;
       try {
-        const result = await api.kanban.moveTask({ workspaceId, taskId, toStatus });
+        const result = await api.kanban.moveTask({ projectPath, taskId, toStatus });
         if (result.success) refresh();
       } catch (err) {
         console.error("[KanbanBoard] moveTask failed:", err);
       }
     },
-    [api, workspaceId, refresh]
+    [api, projectPath, refresh]
   );
 
   const reorderTasks = useCallback(
     async (columnId: string, taskIds: string[]) => {
       if (!api) return;
       try {
-        const result = await api.kanban.reorderTasks({ workspaceId, columnId, taskIds });
+        const result = await api.kanban.reorderTasks({ projectPath, columnId, taskIds });
         if (result.success) refresh();
       } catch (err) {
         console.error("[KanbanBoard] reorderTasks failed:", err);
       }
     },
-    [api, workspaceId, refresh]
+    [api, projectPath, refresh]
   );
 
   const deleteTask = useCallback(
     async (taskId: string) => {
       if (!api) return;
       try {
-        const result = await api.kanban.deleteTask({ workspaceId, taskId });
+        const result = await api.kanban.deleteTask({ projectPath, taskId });
         if (result.success) refresh();
       } catch (err) {
         console.error("[KanbanBoard] deleteTask failed:", err);
       }
     },
-    [api, workspaceId, refresh]
+    [api, projectPath, refresh]
   );
 
   const archiveTask = useCallback(
     async (taskId: string, archive: boolean) => {
       if (!api) return;
       try {
-        const result = await api.kanban.archiveTask({ workspaceId, taskId, archive });
+        const result = await api.kanban.archiveTask({ projectPath, taskId, archive });
         if (result.success) refresh();
       } catch (err) {
         console.error("[KanbanBoard] archiveTask failed:", err);
       }
     },
-    [api, workspaceId, refresh]
+    [api, projectPath, refresh]
   );
 
   // ── DnD handlers ──
@@ -321,7 +320,6 @@ export function KanbanBoard(props: KanbanBoardProps) {
 
       {/* Task create modal */}
       <TaskCreateModal
-        workspaceId={workspaceId}
         projectPath={projectPath}
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}

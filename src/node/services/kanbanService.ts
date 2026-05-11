@@ -15,7 +15,7 @@ import { readBoard, writeBoard } from "./kanbanStorage";
 
 export class KanbanService {
   private readonly config: Config;
-  /** In-memory cache: workspaceId -> board data */
+  /** In-memory cache: projectPath -> board data */
   private readonly cache = new Map<string, KanbanBoardData>();
 
   constructor(config: Config) {
@@ -26,31 +26,30 @@ export class KanbanService {
     return this.config.rootDir;
   }
 
-  /** Load board for a workspace (cached after first read). */
-  async getBoard(workspaceId: string): Promise<KanbanBoardData> {
-    const cached = this.cache.get(workspaceId);
+  /** Load board for a project (cached after first read). */
+  async getBoard(projectPath: string): Promise<KanbanBoardData> {
+    const cached = this.cache.get(projectPath);
     if (cached) return cached;
 
-    const board = await readBoard(this.muxHome, workspaceId);
-    this.cache.set(workspaceId, board);
+    const board = await readBoard(this.muxHome, projectPath);
+    this.cache.set(projectPath, board);
     return board;
   }
 
   /** Persist board and update cache. */
   private async saveBoard(board: KanbanBoardData): Promise<void> {
     await writeBoard(this.muxHome, board);
-    this.cache.set(board.workspaceId, board);
+    this.cache.set(board.projectPath, board);
   }
 
   /** Invalidate cache entry (e.g., on external change). */
-  invalidateCache(workspaceId: string): void {
-    this.cache.delete(workspaceId);
+  invalidateCache(projectPath: string): void {
+    this.cache.delete(projectPath);
   }
 
   // ── Task CRUD ──
 
   async createTask(params: {
-    workspaceId: string;
     projectPath: string;
     title: string;
     description?: string;
@@ -60,7 +59,7 @@ export class KanbanService {
     assignee?: string;
     columnId?: string;
   }): Promise<{ success: true; data: KanbanTask } | { success: false; error: string }> {
-    const board = await this.getBoard(params.workspaceId);
+    const board = await this.getBoard(params.projectPath);
     const status = params.status ?? "backlog";
     const columnId = params.columnId ?? findColumnForStatus(board, status) ?? board.columns[0]?.id;
 
@@ -71,7 +70,7 @@ export class KanbanService {
     const now = Date.now();
     const task: KanbanTask = {
       id: randomUUID(),
-      workspaceId: params.workspaceId,
+      workspaceId: null,
       projectPath: params.projectPath,
       title: params.title,
       description: params.description,
@@ -93,13 +92,13 @@ export class KanbanService {
   }
 
   async updateTask(
-    workspaceId: string,
+    projectPath: string,
     taskId: string,
     updates: Partial<
       Pick<KanbanTask, "title" | "description" | "priority" | "labels" | "assignee" | "metadata">
     >
   ): Promise<{ success: true; data: KanbanTask } | { success: false; error: string }> {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
     const task = board.tasks[taskId];
     if (!task) return { success: false, error: `Task ${taskId} not found` };
 
@@ -109,10 +108,10 @@ export class KanbanService {
   }
 
   async deleteTask(
-    workspaceId: string,
+    projectPath: string,
     taskId: string
   ): Promise<{ success: true; data: void } | { success: false; error: string }> {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
     if (!board.tasks[taskId]) {
       return { success: false, error: `Task ${taskId} not found` };
     }
@@ -131,12 +130,12 @@ export class KanbanService {
   // ── Status Transitions ──
 
   async moveTask(
-    workspaceId: string,
+    projectPath: string,
     taskId: string,
     toStatus: KanbanTaskStatus,
     toIndex?: number
   ): Promise<{ success: true; data: KanbanTask } | { success: false; error: string }> {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
     const task = board.tasks[taskId];
     if (!task) return { success: false, error: `Task ${taskId} not found` };
 
@@ -176,11 +175,11 @@ export class KanbanService {
   // ── Ordering ──
 
   async reorderTasks(
-    workspaceId: string,
+    projectPath: string,
     columnId: string,
     taskIds: string[]
   ): Promise<{ success: true; data: void } | { success: false; error: string }> {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
 
     // Validate all task IDs exist and belong to this column
     const currentOrder = board.taskOrder[columnId] ?? [];
@@ -199,10 +198,10 @@ export class KanbanService {
   }
 
   async reorderColumns(
-    workspaceId: string,
+    projectPath: string,
     columnIds: string[]
   ): Promise<{ success: true; data: void } | { success: false; error: string }> {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
 
     const columnMap = new Map(board.columns.map((c) => [c.id, c]));
     const reordered: typeof board.columns = [];
@@ -220,16 +219,16 @@ export class KanbanService {
   // ── Archive ──
 
   async archiveTask(
-    workspaceId: string,
+    projectPath: string,
     taskId: string,
     archive: boolean
   ): Promise<{ success: true; data: KanbanTask } | { success: false; error: string }> {
     if (archive) {
-      return this.moveTask(workspaceId, taskId, "archived");
+      return this.moveTask(projectPath, taskId, "archived");
     }
 
     // Unarchive: move back to backlog
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
     const task = board.tasks[taskId];
     if (!task) return { success: false, error: `Task ${taskId} not found` };
 
@@ -237,19 +236,19 @@ export class KanbanService {
       return { success: false, error: "Task is not archived" };
     }
 
-    return this.moveTask(workspaceId, taskId, "backlog");
+    return this.moveTask(projectPath, taskId, "backlog");
   }
 
   // ── Column Management ──
 
   async updateColumn(
-    workspaceId: string,
+    projectPath: string,
     columnId: string,
     updates: { title?: string; wipLimit?: number | null }
   ): Promise<
     { success: true; data: KanbanBoardData["columns"][number] } | { success: false; error: string }
   > {
-    const board = await this.getBoard(workspaceId);
+    const board = await this.getBoard(projectPath);
     const column = board.columns.find((c) => c.id === columnId);
     if (!column) return { success: false, error: `Column ${columnId} not found` };
 
@@ -265,14 +264,14 @@ export class KanbanService {
   // ── Queue Management ──
 
   /** Count tasks currently in_progress (used for queue capacity). */
-  async countRunningTasks(workspaceId: string): Promise<number> {
-    const board = await this.getBoard(workspaceId);
+  async countRunningTasks(projectPath: string): Promise<number> {
+    const board = await this.getBoard(projectPath);
     return Object.values(board.tasks).filter((t) => t.status === "in_progress").length;
   }
 
   /** Promote the oldest queued task to in_progress. Returns promoted task or null. */
-  async promoteQueuedTask(workspaceId: string): Promise<KanbanTask | null> {
-    const board = await this.getBoard(workspaceId);
+  async promoteQueuedTask(projectPath: string): Promise<KanbanTask | null> {
+    const board = await this.getBoard(projectPath);
 
     // Find oldest queued task (by queuedAt)
     const queuedTasks = Object.values(board.tasks)
@@ -283,13 +282,13 @@ export class KanbanService {
 
     const task = queuedTasks[0];
 
-    const result = await this.moveTask(workspaceId, task.id, "in_progress");
+    const result = await this.moveTask(projectPath, task.id, "in_progress");
     if (!result.success) return null;
 
     // Clear queued flags on the persisted task after successful move
     result.data.queued = false;
     result.data.queuedAt = undefined;
-    await this.saveBoard(await this.getBoard(workspaceId));
+    await this.saveBoard(await this.getBoard(projectPath));
 
     return result.data;
   }
